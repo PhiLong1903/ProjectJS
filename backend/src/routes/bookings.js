@@ -1,0 +1,15 @@
+const express_1 = require("express");
+const roles_1 = require("../constants/roles");
+const authHandler_1 = require("../utils/authHandler");
+const validateHandler_1 = require("../utils/validateHandler");
+const bookings_1 = require("../controllers/bookings");
+const bookings_validation_1 = require("../utils/validators/bookings.validation");
+exports.bookingsRoutes = express_1.Router();
+exports.bookingsAdminRoutes = express_1.Router();
+exports.bookingsRoutes.use(authHandler_1.CheckLogin, authHandler_1.CheckRole(roles_1.ROLES.PATIENT));
+exports.bookingsRoutes.post("/", validateHandler_1.validateBody(bookings_validation_1.bookingBodySchema), bookings_1.createBookingController);
+exports.bookingsRoutes.get("/me", bookings_1.myBookingsController);
+exports.bookingsAdminRoutes.use(authHandler_1.CheckLogin, authHandler_1.CheckRole(roles_1.ROLES.ADMIN, roles_1.ROLES.STAFF));
+exports.bookingsAdminRoutes.get("/", bookings_1.bookingsAdminController);
+exports.bookingsAdminRoutes.get("/:bookingId", bookings_1.bookingDetailAdminController);
+exports.bookingsAdminRoutes.patch("/:bookingId/status", validateHandler_1.validateBody(bookings_validation_1.bookingStatusSchema), bookings_1.updateBookingStatusController);

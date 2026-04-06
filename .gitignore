@@ -1,0 +1,20 @@
+﻿# Node / frontend
+node_modules/
+dist/
+coverage/
+*.log
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Env
+.env
+.env.local
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

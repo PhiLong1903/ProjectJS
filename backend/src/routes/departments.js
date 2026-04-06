@@ -1,0 +1,14 @@
+const express_1 = require("express");
+const roles_1 = require("../constants/roles");
+const authHandler_1 = require("../utils/authHandler");
+const validateHandler_1 = require("../utils/validateHandler");
+const departments_1 = require("../controllers/departments");
+const departments_validation_1 = require("../utils/validators/departments.validation");
+exports.departmentsRoutes = express_1.Router();
+exports.departmentsAdminRoutes = express_1.Router();
+exports.departmentsRoutes.get("/", departments_1.listDepartmentsController);
+exports.departmentsAdminRoutes.use(authHandler_1.CheckLogin, authHandler_1.CheckRole(roles_1.ROLES.ADMIN));
+exports.departmentsAdminRoutes.get("/", departments_1.listDepartmentsAdminController);
+exports.departmentsAdminRoutes.post("/", validateHandler_1.validateBody(departments_validation_1.departmentBodySchema), departments_1.createDepartmentController);
+exports.departmentsAdminRoutes.put("/:departmentId", validateHandler_1.validateBody(departments_validation_1.departmentBodySchema), departments_1.updateDepartmentController);
+exports.departmentsAdminRoutes.delete("/:departmentId", departments_1.deleteDepartmentController);

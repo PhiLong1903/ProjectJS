@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khối Cận Lâm Sàng - Bệnh viện ĐK KV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        diagnostic: {
+                            dark: '#1e1b4b',   // Tím than đậm (High-tech)
+                            main: '#4f46e5',   // Xanh Tím (Nhấn chính)
+                            light: '#e0e7ff',  // Nền nhạt
+                            accent: '#0ea5e9', // Xanh dương sáng (Accent)
+                            gray: '#64748b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 4px; }
+        /* Hiệu ứng pulse nhẹ cho các icon công nghệ */
+        .tech-pulse { animation: pulse-border 2s infinite; }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+    
+        /* Accessibility + embedded UX */
+        :target {
+            scroll-margin-top: 110px;
+            animation: sectionPulse 1s ease;
+        }
+        @keyframes sectionPulse {
+            from { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.35); }
+            to { box-shadow: 0 0 0 18px rgba(79, 70, 229, 0); }
+        }
+        a:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+        body.embed-mode #danh-sach-khoa {
+            top: 0 !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto !important; }
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body id="top" class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50 border-b-2 border-diagnostic-main">
+        <nav class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-diagnostic-main rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-inner">🔬</div>
+                <div>
+                    <h1 class="text-xl font-bold text-diagnostic-dark">BỆNH VIỆN ĐA KHOA E-HEALTH</h1>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider">Khối Cận Lâm Sàng - Chính Xác & Tiên Phong</p>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#" class="text-slate-600 hover:text-diagnostic-main font-medium transition">Trang chủ</a>
+                <a href="#danh-sach-khoa" class="text-slate-600 hover:text-diagnostic-main font-medium transition">Các Khoa</a>
+                <a href="#tra-cuu" class="bg-diagnostic-dark text-white px-5 py-2 rounded-lg hover:bg-diagnostic-main transition shadow-md flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    Tra cứu kết quả
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="bg-gradient-to-br from-diagnostic-dark to-indigo-900 py-20 md:py-28 overflow-hidden relative text-white border-b-4 border-diagnostic-accent">
+        <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="hexagons" width="50" height="43.4" patternUnits="userSpaceOnUse" patternTransform="scale(2)">
+                        <path d="M25 0l25 14.4v28.9L25 57.7 0 43.3V14.4z" fill="none" stroke="#ffffff" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#hexagons)"/>
+            </svg>
+        </div>
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <span class="inline-block bg-diagnostic-accent text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg mb-6 uppercase tracking-widest">
+                Đỉnh Cao Công Nghệ Y Khoa
+            </span>
+            <h2 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+                TRUNG TÂM CẬN LÂM SÀNG
+            </h2>
+            <p class="text-lg text-indigo-100 max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+                Hệ thống trang thiết bị hiện đại bậc nhất, đạt tiêu chuẩn quốc tế ISO 15189:2012. Chúng tôi cung cấp kết quả xét nghiệm, chẩn đoán hình ảnh và thăm dò chức năng nhanh chóng, chính xác tuyệt đối, làm cơ sở vững chắc cho các quyết định điều trị của bác sĩ lâm sàng.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#danh-sach-khoa" class="bg-white text-diagnostic-dark px-8 py-3 rounded-xl font-bold text-lg hover:bg-indigo-50 shadow-xl transition transform hover:-translate-y-1">
+                    Hệ Thống Khoa Phòng
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="danh-sach-khoa" class="py-5 bg-white sticky top-[73px] z-40 shadow-sm border-b border-slate-100">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap gap-3 justify-center">
+                <a href="#khoa-cdha" class="px-4 py-2 bg-indigo-50 text-xs md:text-sm font-semibold rounded-lg text-diagnostic-dark hover:bg-diagnostic-main hover:text-white transition border border-indigo-100">Chẩn đoán hình ảnh</a>
+                <a href="#khoa-xetnghiem" class="px-4 py-2 bg-indigo-50 text-xs md:text-sm font-semibold rounded-lg text-diagnostic-dark hover:bg-diagnostic-main hover:text-white transition border border-indigo-100">Xét nghiệm</a>
+                <a href="#khoa-noisoi" class="px-4 py-2 bg-indigo-50 text-xs md:text-sm font-semibold rounded-lg text-diagnostic-dark hover:bg-diagnostic-main hover:text-white transition border border-indigo-100">Nội soi</a>
+                <a href="#khoa-thamdochucnang" class="px-4 py-2 bg-indigo-50 text-xs md:text-sm font-semibold rounded-lg text-diagnostic-dark hover:bg-diagnostic-main hover:text-white transition border border-indigo-100">Thăm dò chức năng</a>
+                <a href="#khoa-giaiphaubenh" class="px-4 py-2 bg-indigo-50 text-xs md:text-sm font-semibold rounded-lg text-diagnostic-dark hover:bg-diagnostic-main hover:text-white transition border border-indigo-100">Giải phẫu bệnh</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 py-16 space-y-20">
+
+        <script>
+            function renderStaff(staffList) {
+                return staffList.map(person => `<span class="bg-white border border-indigo-100 px-3 py-1.5 rounded-md text-sm text-slate-700 shadow-sm font-medium hover:border-diagnostic-main hover:text-diagnostic-main transition cursor-default flex items-center gap-1"><svg class="w-3 h-3 text-diagnostic-accent" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>${person}</span>`).join('');
+            }
+        </script>
+
+        <section id="khoa-cdha" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36 relative overflow-hidden group">
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-diagnostic-light rounded-full opacity-50 group-hover:scale-110 transition duration-700 ease-in-out"></div>
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-100 relative z-10">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-diagnostic-dark text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg tech-pulse">📸</div>
+                    <div>
+                        <h3 class="text-3xl font-black text-diagnostic-dark">Khoa Chẩn Đoán Hình Ảnh</h3>
+                        <p class="text-sm text-diagnostic-main font-bold mt-1">Slogan: "Nhìn thấu cơ thể - Bắt bệnh chuẩn xác"</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 mb-10 text-slate-700 relative z-10">
+                <div class="prose max-w-none text-base">
+                    <p>Khoa Chẩn đoán hình ảnh đóng vai trò thiết yếu trong việc phát hiện sớm và theo dõi bệnh lý. Chúng tôi tự hào sở hữu hệ thống trang thiết bị hình ảnh y tế đồng bộ, thế hệ mới nhất nhập khẩu từ các thương hiệu hàng đầu như Siemens, Philips, GE Healthcare.</p>
+                    <p>Hệ thống lưu trữ và truyền tải hình ảnh <strong>PACS (Picture Archiving and Communication System)</strong> giúp các bác sĩ lâm sàng xem kết quả chụp chiếu ngay lập tức trên máy tính tại phòng khám, tiết kiệm thời gian chờ đợi in phim và bảo vệ môi trường.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 hover:border-diagnostic-main transition">
+                        <h6 class="font-bold text-diagnostic-dark mb-1">Cộng Hưởng Từ (MRI)</h6>
+                        <p class="text-xs text-slate-600">Hệ thống MRI 3.0 Tesla chụp toàn thân, khảo sát mạch máu không cần tiêm thuốc, tầm soát u não siêu nét.</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 hover:border-diagnostic-main transition">
+                        <h6 class="font-bold text-diagnostic-dark mb-1">Cắt Lớp Vi Tính (CT)</h6>
+                        <p class="text-xs text-slate-600">Máy CT Scanner 128 dãy, chụp mạch vành trong vài giây, tái tạo hình ảnh 3D chi tiết.</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 hover:border-diagnostic-main transition">
+                        <h6 class="font-bold text-diagnostic-dark mb-1">Siêu Âm 4D/5D</h6>
+                        <p class="text-xs text-slate-600">Siêu âm Doppler màu mạch máu, siêu âm thai 5D, siêu âm tim đàn hồi mô.</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 hover:border-diagnostic-main transition">
+                        <h6 class="font-bold text-diagnostic-dark mb-1">X-Quang Kỹ Thuật Số</h6>
+                        <p class="text-xs text-slate-600">Hệ thống X-Quang DR giảm liều tia xạ, chụp nhũ ảnh tầm soát ung thư vú sớm.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
+                <h4 class="text-lg font-bold text-diagnostic-dark mb-4 border-l-4 border-diagnostic-main pl-3">Đội ngũ Bác sĩ & KTV Hình ảnh</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Trưởng khoa</p>
+                        <p class="text-base font-black text-slate-900">BS.CKII Trần Trọng Minh</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">KTV Trưởng</p>
+                        <p class="text-base font-black text-slate-900">CN. Nguyễn Văn Đại</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <script>document.write(renderStaff(["BS.CKI Lê Thị Minh Hằng", "ThS.BS Phạm Hữu Trí", "BS.CKI Hoàng Quốc Việt", "BS Vũ Ngọc Bích", "BS Trần Bảo Nam", "KTV Cao Hữu Phước", "KTV Lâm Tuyết Mai"]));</script>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-xetnghiem" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36">
+            <div class="flex flex-col md:flex-row justify-between gap-6 mb-8 pb-6 border-b border-slate-100">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg">🩸</div>
+                    <div>
+                        <h3 class="text-3xl font-black text-diagnostic-dark">Khoa Xét Nghiệm Trung Tâm</h3>
+                        <p class="text-sm text-blue-600 font-bold mt-1">Slogan: "Nhanh chóng - Khách quan - Đáng tin cậy"</p>
+                    </div>
+                </div>
+                <div class="bg-diagnostic-main text-white px-5 py-3 rounded-xl shadow-md flex items-center gap-3">
+                    <div class="text-3xl">🏆</div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase opacity-80">Đạt chứng nhận</p>
+                        <p class="font-black text-lg">ISO 15189:2012</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-slate-700 text-base mb-8">
+                Hệ thống phòng Lab hoàn toàn tự động (Automation System), có khả năng xử lý hàng ngàn mẫu xét nghiệm mỗi ngày với độ chính xác tuyệt đối. Hệ thống ống gửi mẫu bằng khí nén (Pneumatic tube system) kết nối trực tiếp từ các khoa lâm sàng giúp rút ngắn tối đa thời gian trả kết quả.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-10">
+                <div class="border border-slate-200 p-5 rounded-xl bg-white shadow-sm hover:shadow-md transition">
+                    <h6 class="font-bold text-slate-900 mb-3 border-b pb-2 flex justify-between">
+                        <span>Hóa Sinh - Miễn Dịch</span>
+                        <span class="text-diagnostic-accent">🧬</span>
+                    </h6>
+                    <ul class="text-sm text-slate-600 space-y-1">
+                        <li>Hệ thống Cobas (Roche), Alinity (Abbott).</li>
+                        <li>Định lượng marker ung thư sớm (AFP, CEA, CA 125, PSA...).</li>
+                        <li>Xét nghiệm nội tiết tố tuyến giáp, sinh sản.</li>
+                    </ul>
+                </div>
+                <div class="border border-slate-200 p-5 rounded-xl bg-white shadow-sm hover:shadow-md transition">
+                    <h6 class="font-bold text-slate-900 mb-3 border-b pb-2 flex justify-between">
+                        <span>Huyết Học - Truyền Máu</span>
+                        <span class="text-diagnostic-accent">🔬</span>
+                    </h6>
+                    <ul class="text-sm text-slate-600 space-y-1">
+                        <li>Máy phân tích huyết học tự động 5 thành phần bạch cầu.</li>
+                        <li>Đo lường chức năng đông máu toàn diện.</li>
+                        <li>Ngân hàng máu đạt chuẩn, an toàn truyền máu 24/7.</li>
+                    </ul>
+                </div>
+                <div class="border border-slate-200 p-5 rounded-xl bg-white shadow-sm hover:shadow-md transition">
+                    <h6 class="font-bold text-slate-900 mb-3 border-b pb-2 flex justify-between">
+                        <span>Vi Sinh - Sinh Học Phân Tử</span>
+                        <span class="text-diagnostic-accent">🦠</span>
+                    </h6>
+                    <ul class="text-sm text-slate-600 space-y-1">
+                        <li>Hệ thống cấy máu tự động, định danh vi khuẩn và kháng sinh đồ.</li>
+                        <li>Xét nghiệm PCR định lượng virus viêm gan B, C, HPV, Covid-19.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
+                <h4 class="text-lg font-bold text-diagnostic-dark mb-4 border-l-4 border-diagnostic-main pl-3">Đội ngũ Xét nghiệm viên</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 md:col-span-1">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Trưởng khoa</p>
+                        <p class="text-base font-black text-slate-900">TS.BS Lê Thị Ngọc Dung</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <script>document.write(renderStaff(["BS.CKI Nguyễn Tấn Tài", "ThS. Cử nhân xét nghiệm Trần Hà Linh", "BS Mai Thái Hòa", "KTV Lâm Chí Khang", "KTV Đỗ Quyên", "KTV Lê Quốc Bảo", "KTV Ngô Mai Phương"]));</script>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-noisoi" class="bg-slate-900 p-8 md:p-10 rounded-3xl shadow-xl border border-slate-800 scroll-mt-36 text-white relative">
+             <div class="absolute inset-0 opacity-10 rounded-3xl overflow-hidden pointer-events-none">
+                 <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1000" alt="Endoscopy Background" class="w-full h-full object-cover">
+             </div>
+             <div class="flex items-center gap-5 mb-8 pb-6 border-b border-slate-700 relative z-10">
+                <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg border border-indigo-400">🔦</div>
+                <div>
+                    <h3 class="text-3xl font-black text-white">Khoa Nội Soi</h3>
+                    <p class="text-sm text-indigo-300 font-bold mt-1">Slogan: "Nhẹ nhàng - Không đau - Tầm soát ung thư sớm"</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 mb-10 relative z-10">
+                <div>
+                    <p class="text-slate-300 mb-4 leading-relaxed">Tiên phong ứng dụng kỹ thuật <strong>Nội soi không đau (Nội soi tiền mê)</strong>, giúp bệnh nhân vượt qua nỗi ám ảnh khi thăm khám dạ dày, đại tràng. Quá trình soi diễn ra như một giấc ngủ ngắn, an toàn tuyệt đối.</p>
+                    <p class="text-slate-300 leading-relaxed">Trang bị hệ thống ống soi Olympus EVIS EXERA III cao cấp với công nghệ NBI (Narrow Band Imaging) - phóng đại hình ảnh mao mạch, giúp phát hiện ung thư đường tiêu hóa từ giai đoạn rất sớm (khi khối u chỉ vài mm).</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                    <h6 class="font-bold text-white mb-4">Các dịch vụ kỹ thuật cao:</h6>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Nội soi thực quản - dạ dày - tá tràng ống mềm.</li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Nội soi đại trực tràng toàn bộ cắt polyp ngừa ung thư.</li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Nội soi phế quản chẩn đoán u phổi.</li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> ERCP: Nội soi mật tụy ngược dòng lấy sỏi đường mật.</li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Gắp dị vật đường tiêu hóa cấp cứu.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 relative z-10">
+                <h4 class="text-lg font-bold text-white mb-4">👨‍⚕️ Bác sĩ Nội soi tiêu hóa & Hô hấp</h4>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-slate-700 border border-slate-600 px-3 py-1.5 rounded-md text-sm text-white shadow-sm font-bold">BS.CKII Trần Khắc Phục (Trưởng khoa)</span>
+                    <span class="bg-slate-700 border border-slate-600 px-3 py-1.5 rounded-md text-sm text-white shadow-sm font-medium">BS.CKI Nguyễn Diệu Hiền</span>
+                    <span class="bg-slate-700 border border-slate-600 px-3 py-1.5 rounded-md text-sm text-white shadow-sm font-medium">ThS.BS Đinh Tiến Dũng</span>
+                    <span class="bg-slate-700 border border-slate-600 px-3 py-1.5 rounded-md text-sm text-white shadow-sm font-medium">BS Lâm Nhật Huy</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-thamdochucnang" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36">
+            <div class="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100">
+                <div class="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg">📈</div>
+                <div>
+                    <h3 class="text-3xl font-black text-diagnostic-dark">Khoa Thăm Dò Chức Năng</h3>
+                    <p class="text-sm text-teal-600 font-bold mt-1">Slogan: "Lắng nghe từng nhịp đập cơ thể"</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-teal-50 p-5 rounded-xl border border-teal-100">
+                    <div class="text-2xl mb-2">❤️</div>
+                    <h6 class="font-bold text-slate-900 mb-1 text-sm">Điện tâm đồ (ECG)</h6>
+                    <p class="text-xs text-slate-600">Phát hiện rối loạn nhịp, nhồi máu cơ tim, thiếu máu cục bộ.</p>
+                </div>
+                <div class="bg-teal-50 p-5 rounded-xl border border-teal-100">
+                    <div class="text-2xl mb-2">⏱️</div>
+                    <h6 class="font-bold text-slate-900 mb-1 text-sm">Holter 24h</h6>
+                    <p class="text-xs text-slate-600">Đeo máy theo dõi nhịp tim và huyết áp liên tục trong 24 giờ.</p>
+                </div>
+                <div class="bg-teal-50 p-5 rounded-xl border border-teal-100">
+                    <div class="text-2xl mb-2">🧠</div>
+                    <h6 class="font-bold text-slate-900 mb-1 text-sm">Điện não đồ (EEG)</h6>
+                    <p class="text-xs text-slate-600">Đánh giá sóng não, chẩn đoán động kinh, rối loạn giấc ngủ.</p>
+                </div>
+                <div class="bg-teal-50 p-5 rounded-xl border border-teal-100">
+                    <div class="text-2xl mb-2">🫁</div>
+                    <h6 class="font-bold text-slate-900 mb-1 text-sm">Hô hấp ký</h6>
+                    <p class="text-xs text-slate-600">Đo chức năng hô hấp, chẩn đoán Hen suyễn và COPD.</p>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100">
+                <h4 class="text-sm font-bold text-diagnostic-dark mb-3">Đội ngũ Bác sĩ</h4>
+                <div class="flex flex-wrap gap-2">
+                    <script>document.write(renderStaff(["BS.CKI Nguyễn Trí Thanh", "BS Phạm Thị Tuyết", "BS Ngô Quốc An"]));</script>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-giaiphaubenh" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36 border-l-8 border-l-slate-800">
+            <div class="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100">
+                <div class="w-16 h-16 bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg">🔬</div>
+                <div>
+                    <h3 class="text-3xl font-black text-diagnostic-dark">Khoa Giải Phẫu Bệnh</h3>
+                    <p class="text-sm text-slate-600 font-bold mt-1">Slogan: "Tiếng nói cuối cùng của chẩn đoán"</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 mb-8 text-slate-700">
+                <div class="prose max-w-none text-base">
+                    <p>Giải phẫu bệnh được coi là "tiêu chuẩn vàng" trong chẩn đoán, đặc biệt là bệnh lý ung thư. Khoa thực hiện việc khảo sát hình thái tế bào, mô học dưới kính hiển vi để xác định bản chất lành tính hay ác tính của các khối u, tổn thương.</p>
+                    <ul class="list-disc list-inside mt-4 text-sm font-medium">
+                        <li>Sinh thiết tức thì (Cắt lạnh - Frozen section) ngay trong lúc mổ.</li>
+                        <li>Chọc hút tế bào bằng kim nhỏ (FNA) tuyến giáp, vú, hạch.</li>
+                        <li>Xét nghiệm tế bào học cổ tử cung (Pap smear, ThinPrep) tầm soát ung thư.</li>
+                        <li>Hóa mô miễn dịch (IHC) hỗ trợ điều trị đích trong ung thư.</li>
+                    </ul>
+                </div>
+                 <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                     <h4 class="text-lg font-bold text-diagnostic-dark mb-4 border-l-4 border-diagnostic-main pl-3">Chuyên gia Bệnh học</h4>
+                     <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-4 inline-block">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Trưởng khoa</p>
+                        <p class="text-base font-black text-slate-900">TS.BS Đào Tấn Phát</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <script>document.write(renderStaff(["ThS.BS Trần Bảo Quyên", "BS.CKI Nguyễn Tấn Đạt", "KTV Lương Hoàng Nhật"]));</script>
+                    </div>
+                 </div>
+            </div>
+        </section>
+
+    </main>
+
+    <section id="tra-cuu" class="bg-slate-900 py-16 text-white border-t-4 border-diagnostic-main">
+        <div class="container mx-auto px-4 text-center">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-5xl mb-4">💻</div>
+                <h2 class="text-3xl font-black mb-4">Tra Cứu Kết Quả Điện Tử</h2>
+                <p class="text-slate-400 mb-8">Bệnh nhân có thể xem trực tiếp kết quả Xét nghiệm, hình ảnh X-Quang, CT, MRI thông qua cổng thông tin trực tuyến của bệnh viện mà không cần chờ đợi in giấy.</p>
+                
+                <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex flex-col md:flex-row items-center justify-center gap-4">
+                    <input type="text" placeholder="Nhập mã bệnh nhân (PID)" class="px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white w-full md:w-64 focus:outline-none focus:border-diagnostic-main">
+                    <button class="px-6 py-3 bg-diagnostic-main text-white font-bold rounded-lg hover:bg-indigo-500 w-full md:w-auto transition">Tra Cứu Ngay</button>
+                </div>
+                <p class="mt-4 text-xs text-slate-500">*Mã PID được in trên phiếu biên nhận dịch vụ cận lâm sàng.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-950 py-8 text-slate-400 text-center text-sm border-t border-slate-800">
+        <div class="container mx-auto px-4">
+            <p class="font-bold text-white mb-2">BỆNH VIỆN ĐA KHOA KHU VỰC THỦ ĐỨC</p>
+            <p>Landing page Mô phỏng Khối Cận Lâm Sàng</p>
+        </div>
+    </footer>
+
+
+    <script>
+        (function () {
+            var isEmbedded = new URLSearchParams(window.location.search).get("embed") === "1";
+            if (isEmbedded) {
+                document.body.classList.add("embed-mode");
+            }
+            var timeoutId;
+            var postMetrics = function () {
+                if (window.parent === window) {
+                    return;
+                }
+                var height = Math.max(
+                    document.documentElement.scrollHeight,
+                    document.body.scrollHeight,
+                    document.documentElement.offsetHeight,
+                    document.body.offsetHeight
+                );
+                window.parent.postMessage(
+                    {
+                        type: "CAN_LAM_SANG_LANDING_METRICS",
+                        height: height,
+                        hash: window.location.hash || "#",
+                        href: window.location.href,
+                        title: document.title
+                    },
+                    "*"
+                );
+            };
+            var requestPost = function () {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(postMetrics, 80);
+            };
+            window.addEventListener("load", requestPost);
+            window.addEventListener("resize", requestPost);
+            window.addEventListener("hashchange", requestPost);
+            if (window.MutationObserver) {
+                var observer = new MutationObserver(requestPost);
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    characterData: true
+                });
+            }
+            requestPost();
+        })();
+    </script>
+</body>
+</html>

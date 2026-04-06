@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dịch Vụ Y Tế - Bệnh Viện Đa Khoa Khu Vực</title>
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(rgba(0, 86, 179, 0.8), rgba(0, 86, 179, 0.8)), url('https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Menu Điều Hướng Nhanh */
+        .page-nav {
+            position: sticky;
+            top: 0;
+            background: #0056b3;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            padding: 5px 10px;
+        }
+
+        .page-nav a:hover {
+            color: #ffdd57;
+        }
+
+        /* Sections */
+        .section {
+            padding: 60px 0;
+            background: #fff;
+        }
+
+        .section-alt {
+            background: #f0f7ff;
+        }
+
+        .section-title {
+            font-size: 30px;
+            color: #0056b3;
+            margin-bottom: 25px;
+            position: relative;
+            text-align: center;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 60px;
+            height: 4px;
+            background: #ffdd57;
+            display: block;
+            margin: 15px auto 30px;
+        }
+
+        .content-block {
+            font-size: 17px;
+            text-align: justify;
+            margin-bottom: 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Grid Danh Sách Gói Khám */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .package-item {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #0056b3;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .package-item:hover {
+            transform: translateX(5px);
+            border-left-color: #ffdd57;
+        }
+
+        .package-item::before {
+            content: '✔️';
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        /* Card Dịch vụ khác */
+        .service-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+            border-top: 4px solid #0056b3;
+        }
+
+        .service-card h3 {
+            color: #0056b3;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        /* Nút Hotline / Nút Call to action */
+        .hotline-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #d9534f;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(217, 83, 79, 0.3);
+            transition: background 0.3s;
+        }
+
+        .hotline-btn:hover {
+            background-color: #c9302c;
+        }
+
+        .hotline-btn.blue {
+            background-color: #0056b3;
+            box-shadow: 0 4px 6px rgba(0, 86, 179, 0.3);
+        }
+
+        .hotline-btn.blue:hover {
+            background-color: #004494;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            background: #222;
+            color: #ccc;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 28px; }
+            .page-nav a { margin: 5px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Các Dịch Vụ Y Tế & Chăm Sóc Sức Khỏe</h1>
+        </div>
+    </section>
+
+    <div class="page-nav">
+        <a href="#kham-suc-khoe">Khám Sức Khỏe</a>
+        <a href="#cap-cuu">Cấp Cứu Ngoại Viện</a>
+        <a href="#huan-luyen">Huấn Luyện Sơ Cứu</a>
+        <a href="#hop-dong">Hợp Đồng Cấp Cứu</a>
+        <a href="#bao-hiem">Đại Lý BHYT</a>
+    </div>
+
+    <section id="kham-suc-khoe" class="section">
+        <div class="container">
+            <h2 class="section-title">Khám Sức Khỏe Theo Thông Tư & Tầm Soát</h2>
+            <div class="content-block">
+                <p>Khám sức khỏe làm việc, học tập, lái xe, kinh doanh thực phẩm (thẻ xanh), nhân viên khách sạn (thẻ hồng); Khám sức khỏe lập di chúc,…</p>
+                <br>
+                <p>Để phục vụ nhu cầu khám tầm soát sức khỏe của cộng đồng, Bệnh viện chúng tôi đã triển khai tốt các dịch vụ khám, tư vấn, theo dõi và chăm sóc sức khỏe cho cá nhân và doanh nghiệp một cách nhanh chóng, hiệu quả và chuyên nghiệp nhất.</p>
+            </div>
+            
+            <h3 style="text-align: center; color: #333; margin-top: 30px;">Danh Mục Các Gói Khám:</h3>
+            <div class="packages-grid">
+                <div class="package-item">Gói Khám SK Tổng Quát & Tầm Soát Ung Thư (Nam < 50 tuổi)</div>
+                <div class="package-item">Gói Khám SK Tổng Quát & Tầm Soát Ung Thư (Nam > 50 tuổi)</div>
+                <div class="package-item">Gói Khám SK Tổng Quát & Tầm Soát Ung Thư (Nữ có gia đình)</div>
+                <div class="package-item">Gói Khám SK Tổng Quát & Tầm Soát Ung Thư (Nữ độc thân)</div>
+                <div class="package-item">Gói Khám Sức Khỏe Tổng Quát Cơ Bản</div>
+                <div class="package-item">Gói Tầm Soát Ung Thư Hệ Tiêu Hóa</div>
+                <div class="package-item">Gói Tầm Soát Ung Thư Tiền Liệt Tuyến</div>
+                <div class="package-item">Gói Tầm Soát Ung Thư Gan</div>
+                <div class="package-item">Gói Tầm Soát Ung Thư Phổi</div>
+                <div class="package-item">Gói Tầm Soát Nguy Cơ Đột Quỵ</div>
+                <div class="package-item">Gói Tầm Soát Bệnh Thận Mạn</div>
+                <div class="package-item">Gói Khám Tầm Soát Tăng Huyết Áp</div>
+                <div class="package-item">Gói Khám Tầm Soát Suy Giãn Tĩnh Mạch Chi Dưới</div>
+                <div class="package-item">Gói Khám Tầm Soát Bệnh Mạch Vành</div>
+                <div class="package-item">Gói Khám Sàng Lọc Bệnh Lý Tim Mạch Cơ Bản</div>
+                <div class="package-item">Gói Khám Sàng Lọc Bệnh Lý Tiểu Đường</div>
+                <div class="package-item">Gói Khám Sàng Lọc Tiết Niệu - Sỏi</div>
+                <div class="package-item">Gói Tầm Soát Nguy Cơ Bệnh Phổi Tắc Nghẽn Mạn Tính</div>
+                <div class="package-item">Gói Khám Tuyến Giáp (Kèm SKTQ)</div>
+                <div class="package-item">Gói Khám Nội Thần Kinh (Kèm SKTQ)</div>
+                <div class="package-item">Gói Khám Sàng Lọc Ung Thư Vú (Kèm SKTQ)</div>
+                <div class="package-item">Gói Khám Sức Khỏe Tổng Quát Trẻ Em</div>
+            </div>
+
+            <div class="text-center">
+                <a href="tel:1900066883" class="hotline-btn blue">📞 Tư vấn Gói Khám: 1900 066 883</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="cap-cuu" class="section section-alt">
+        <div class="container">
+            <div class="service-card">
+                <h3>🚑 Cấp Cứu Ngoại Viện</h3>
+                <p>Cấp cứu ngoại viện góp phần mang lại sự sống cho người bệnh, hỗ trợ người bệnh vượt qua nguy hiểm trong tình huống khẩn cấp.</p>
+                <br>
+                <p>Bệnh viện chúng tôi sẵn sàng phục vụ 24/24 với đội ngũ nhân viên chuyên nghiệp được đào tạo chuyên sâu về sơ cấp cứu cùng đầy đủ phương tiện và trang thiết giúp nhanh chóng xử lý cấp cứu tại chỗ với thời gian nhanh nhất.</p>
+                <br>
+                <p>Nếu bạn gặp những vấn đề khẩn cấp về tình trạng sức khỏe như tai nạn, bệnh cấp tính nghiêm trọng, bị thương, hãy gọi Khoa Cấp cứu hoặc đến ngay để được xử lý kịp thời.</p>
+                <p><em>* Cấp cứu vệ tinh 115: Chi tiết xem tại nội quy bệnh viện.</em></p>
+                
+                <a href="tel:+842838966894" class="hotline-btn">🚨 Gọi Cấp Cứu 24/7: +(84) 28 3896 6894</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="huan-luyen" class="section">
+        <div class="container">
+            <div class="service-card">
+                <h3>🩺 Huấn Luyện Sơ Cấp Cứu</h3>
+                <p>Huấn luyện sơ cấp cứu là khóa học cung cấp những kiến thức cơ bản về sơ cứu vết thương và hướng dẫn những thao tác thực hiện để có thể trợ giúp hay chữa trị lúc ban đầu cho nạn nhân trước khi có xe cứu thương, hoặc được nhân viên y tế chữa trị. Việc sơ cứu này nhằm mục đích ngăn không cho tình trạng xấu đi, thúc đẩy sự phục hồi, hoặc có thể cứu sống được nạn nhân.</p>
+                <br>
+                <p>Bệnh viện chúng tôi đã và đang triển khai tốt loại hình dịch vụ này nhằm hỗ trợ và cung cấp kiến thức cơ bản cho mọi đối tượng, đặc biệt là các Công ty, Doanh nghiệp, các Cơ quan, Đơn vị để họ có thể xử lý ban đầu khi bị tai nạn lao động.</p>
+                
+                <a href="tel:1900066883" class="hotline-btn blue">📞 Liên hệ Tư vấn: 1900 066 883</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="hop-dong" class="section section-alt">
+        <div class="container">
+            <div class="service-card">
+                <h3>🤝 Hợp Đồng Phối Hợp Cấp Cứu Tại Chỗ</h3>
+                <p>Loại hình dịch vụ này của Chúng tôi nhằm phối hợp hỗ trợ cho các Công ty, Doanh nghiệp, các Cơ quan, Đơn vị trong việc cấp cứu người bệnh khi họ có nhu cầu trong thời gian sớm nhất.</p>
+                <br>
+                <p><strong>Đối tượng:</strong> Tất cả các Công ty, Doanh nghiệp, các Cơ quan, Đơn vị đóng trong địa bàn và khu vực lân cận.</p>
+                <br>
+                <p><strong>Hình thức hoạt động:</strong> Có xe cứu thương, trang thiết bị và đội ngũ nhân viên phục vụ 24/24 các trường hợp vượt quá khả năng xử lý chuyên môn của đơn vị trong vòng 30 phút kể từ khi nhận được tin báo.</p>
+                
+                <a href="tel:1900066883" class="hotline-btn blue">📞 Hotline Hợp Đồng: 1900 066 883</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="bao-hiem" class="section">
+        <div class="container">
+            <div class="service-card" style="border-top-color: #28a745;">
+                <h3 style="color: #28a745;">🛡️ Đại Lý Bảo Hiểm Y Tế</h3>
+                <p>Hiện tại Bệnh viện của chúng tôi đã triển khai đại lý bán BHYT nhằm đáp ứng nhu cầu cũng như hỗ trợ tất cả đối tượng người dân có nhu cầu đăng ký khám chữa bệnh ban đầu tại Bệnh viện Đa khoa Khu vực.</p>
+                <br>
+                <p>Chúng tôi với đội ngũ nhân viên nhiệt tình, năng động sẽ tư vấn, hỗ trợ người dân các thủ tục một cách đơn giản và nhanh nhất.</p>
+                
+                <a href="tel:1900066883" class="hotline-btn" style="background-color: #28a745; box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3);">📞 Tư vấn BHYT: 1900 066 883</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Đồ án Website Bệnh Viện Đa Khoa Khu Vực. Thiết kế phục vụ mục đích học tập.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

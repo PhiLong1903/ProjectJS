@@ -1,0 +1,14 @@
+const express_1 = require("express");
+const roles_1 = require("../constants/roles");
+const authHandler_1 = require("../utils/authHandler");
+const validateHandler_1 = require("../utils/validateHandler");
+const services_1 = require("../controllers/services");
+const services_validation_1 = require("../utils/validators/services.validation");
+exports.servicesRoutes = express_1.Router();
+exports.servicesAdminRoutes = express_1.Router();
+exports.servicesRoutes.get("/", services_1.listServicesController);
+exports.servicesAdminRoutes.use(authHandler_1.CheckLogin, authHandler_1.CheckRole(roles_1.ROLES.ADMIN));
+exports.servicesAdminRoutes.get("/", services_1.listServicesAdminController);
+exports.servicesAdminRoutes.post("/", validateHandler_1.validateBody(services_validation_1.serviceBodySchema), services_1.createServiceController);
+exports.servicesAdminRoutes.put("/:serviceId", validateHandler_1.validateBody(services_validation_1.serviceBodySchema), services_1.updateServiceController);
+exports.servicesAdminRoutes.delete("/:serviceId", services_1.deleteServiceController);

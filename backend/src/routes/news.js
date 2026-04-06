@@ -1,0 +1,15 @@
+const express_1 = require("express");
+const roles_1 = require("../constants/roles");
+const authHandler_1 = require("../utils/authHandler");
+const validateHandler_1 = require("../utils/validateHandler");
+const news_1 = require("../controllers/news");
+const news_validation_1 = require("../utils/validators/news.validation");
+exports.newsRoutes = express_1.Router();
+exports.newsAdminRoutes = express_1.Router();
+exports.newsRoutes.get("/", news_1.listNewsController);
+exports.newsRoutes.get("/:slug", news_1.getNewsDetailController);
+exports.newsAdminRoutes.use(authHandler_1.CheckLogin, authHandler_1.CheckRole(roles_1.ROLES.ADMIN));
+exports.newsAdminRoutes.get("/", news_1.listNewsAdminController);
+exports.newsAdminRoutes.post("/", validateHandler_1.validateBody(news_validation_1.newsBodySchema), news_1.createNewsController);
+exports.newsAdminRoutes.put("/:newsId", validateHandler_1.validateBody(news_validation_1.newsBodySchema), news_1.updateNewsController);
+exports.newsAdminRoutes.delete("/:newsId", news_1.deleteNewsController);

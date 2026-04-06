@@ -1,0 +1,18 @@
+const express_1 = require("express");
+const roles_1 = require("../constants/roles");
+const authHandler_1 = require("../utils/authHandler");
+const validateHandler_1 = require("../utils/validateHandler");
+const doctor_profiles_1 = require("../controllers/doctor-profiles");
+const doctor_profiles_validation_1 = require("../utils/validators/doctor-profiles.validation");
+exports.doctorRoutes = express_1.Router();
+exports.doctorRoutes.use(authHandler_1.CheckLogin, authHandler_1.CheckRole(roles_1.ROLES.DOCTOR));
+exports.doctorRoutes.get("/profile", doctor_profiles_1.getMyDoctorProfileController);
+exports.doctorRoutes.patch("/profile", validateHandler_1.validateBody(doctor_profiles_validation_1.doctorProfileUpdateSchema), doctor_profiles_1.updateMyDoctorProfileController);
+exports.doctorRoutes.get("/appointments", doctor_profiles_1.getMyDoctorAppointmentsController);
+exports.doctorRoutes.patch("/appointments/:bookingId/status", validateHandler_1.validateBody(doctor_profiles_validation_1.doctorAppointmentStatusSchema), doctor_profiles_1.updateMyAppointmentStatusController);
+exports.doctorRoutes.post("/appointments/:bookingId/prescription", validateHandler_1.validateBody(doctor_profiles_validation_1.doctorPrescriptionSchema), doctor_profiles_1.upsertMyPrescriptionController);
+exports.doctorRoutes.get("/patients/:patientCode/records", doctor_profiles_1.getPatientRecordsByCodeController);
+exports.doctorRoutes.post("/slots", validateHandler_1.validateBody(doctor_profiles_validation_1.doctorSlotSchema), doctor_profiles_1.createMyDoctorSlotController);
+exports.doctorRoutes.delete("/slots/:slotId", doctor_profiles_1.deleteMyDoctorSlotController);
+exports.doctorRoutes.get("/notifications", doctor_profiles_1.getMyDoctorNotificationsController);
+exports.doctorRoutes.patch("/notifications/:notificationId/read", doctor_profiles_1.readMyDoctorNotificationController);

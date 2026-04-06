@@ -1,0 +1,17 @@
+const express_1 = require("express");
+const roles_1 = require("../constants/roles");
+const authHandler_1 = require("../utils/authHandler");
+const validateHandler_1 = require("../utils/validateHandler");
+const doctors_1 = require("../controllers/doctors");
+const doctors_validation_1 = require("../utils/validators/doctors.validation");
+exports.doctorsRoutes = express_1.Router();
+exports.doctorsAdminRoutes = express_1.Router();
+exports.doctorsRoutes.get("/", doctors_1.listDoctorsController);
+exports.doctorsRoutes.get("/:doctorId/slots", doctors_1.listDoctorSlotsController);
+exports.doctorsAdminRoutes.use(authHandler_1.CheckLogin, authHandler_1.CheckRole(roles_1.ROLES.ADMIN));
+exports.doctorsAdminRoutes.get("/", doctors_1.listDoctorsAdminController);
+exports.doctorsAdminRoutes.post("/", validateHandler_1.validateBody(doctors_validation_1.doctorBodySchema), doctors_1.createDoctorController);
+exports.doctorsAdminRoutes.put("/:doctorId", validateHandler_1.validateBody(doctors_validation_1.doctorBodySchema), doctors_1.updateDoctorController);
+exports.doctorsAdminRoutes.delete("/:doctorId", doctors_1.deleteDoctorController);
+exports.doctorsAdminRoutes.post("/slots", validateHandler_1.validateBody(doctors_validation_1.doctorSlotBodySchema), doctors_1.createDoctorSlotController);
+exports.doctorsAdminRoutes.delete("/slots/:slotId", doctors_1.deleteDoctorSlotController);

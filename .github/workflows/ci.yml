@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+
+jobs:
+  backend-frontend-ci:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: hospital_ehealth
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d hospital_ehealth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Init backend database
+        working-directory: backend
+        env:
+          NODE_ENV: test
+          PORT: 8080
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hospital_ehealth
+          JWT_ACCESS_SECRET: replace_with_a_very_long_access_secret_key_123456789
+          JWT_REFRESH_SECRET: replace_with_a_very_long_refresh_secret_key_123456789
+          JWT_ACCESS_EXPIRES_IN: 30m
+          JWT_REFRESH_EXPIRES_IN_DAYS: 14
+          CLIENT_URL: http://localhost:5173
+          CLIENT_URLS: http://localhost:5173,http://127.0.0.1:5173
+          COOKIE_SECURE: "false"
+        run: npm run db:init
+
+      - name: Backend lint
+        working-directory: backend
+        env:
+          NODE_ENV: test
+          PORT: 8080
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hospital_ehealth
+          JWT_ACCESS_SECRET: replace_with_a_very_long_access_secret_key_123456789
+          JWT_REFRESH_SECRET: replace_with_a_very_long_refresh_secret_key_123456789
+          JWT_ACCESS_EXPIRES_IN: 30m
+          JWT_REFRESH_EXPIRES_IN_DAYS: 14
+          CLIENT_URL: http://localhost:5173
+          CLIENT_URLS: http://localhost:5173,http://127.0.0.1:5173
+          COOKIE_SECURE: "false"
+        run: npm run lint
+
+      - name: Backend typecheck
+        working-directory: backend
+        env:
+          NODE_ENV: test
+          PORT: 8080
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hospital_ehealth
+          JWT_ACCESS_SECRET: replace_with_a_very_long_access_secret_key_123456789
+          JWT_REFRESH_SECRET: replace_with_a_very_long_refresh_secret_key_123456789
+          JWT_ACCESS_EXPIRES_IN: 30m
+          JWT_REFRESH_EXPIRES_IN_DAYS: 14
+          CLIENT_URL: http://localhost:5173
+          CLIENT_URLS: http://localhost:5173,http://127.0.0.1:5173
+          COOKIE_SECURE: "false"
+        run: npm run typecheck
+
+      - name: Backend test
+        working-directory: backend
+        env:
+          NODE_ENV: test
+          PORT: 8080
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hospital_ehealth
+          JWT_ACCESS_SECRET: replace_with_a_very_long_access_secret_key_123456789
+          JWT_REFRESH_SECRET: replace_with_a_very_long_refresh_secret_key_123456789
+          JWT_ACCESS_EXPIRES_IN: 30m
+          JWT_REFRESH_EXPIRES_IN_DAYS: 14
+          CLIENT_URL: http://localhost:5173
+          CLIENT_URLS: http://localhost:5173,http://127.0.0.1:5173
+          COOKIE_SECURE: "false"
+        run: npm run test
+
+      - name: Backend build
+        working-directory: backend
+        run: npm run build
+
+      - name: Frontend lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Frontend typecheck
+        working-directory: frontend
+        run: npm run typecheck
+
+      - name: Frontend build
+        working-directory: frontend
+        run: npm run build

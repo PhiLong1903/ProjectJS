@@ -1,0 +1,415 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đào Tạo Bác Sĩ - Bệnh Viện Đa Khoa E-Health</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    :root {
+      --primary: #0f4c81;
+      --secondary: #1f8a70;
+      --accent: #ffc857;
+      --bg: #f4f8fb;
+      --text: #1f2937;
+      --muted: #5b6472;
+      --white: #ffffff;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 360px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--white);
+      background:
+        linear-gradient(rgba(15, 76, 129, 0.78), rgba(15, 76, 129, 0.82)),
+        url("https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=1600&q=80") center/cover;
+      padding: 48px 16px;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 5vw, 46px);
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 0 auto;
+      font-size: 17px;
+      opacity: 0.95;
+    }
+
+    .quick-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--primary);
+      padding: 12px 10px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .quick-nav a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .quick-nav a:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff7d6;
+    }
+
+    section {
+      padding: 64px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 24px;
+      color: var(--primary);
+      font-size: clamp(26px, 3.2vw, 36px);
+    }
+
+    .section-lead {
+      text-align: center;
+      color: var(--muted);
+      max-width: 820px;
+      margin: 0 auto 36px;
+      font-size: 16px;
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+    }
+
+    .pillar-card {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 20px;
+      border-top: 4px solid var(--secondary);
+      box-shadow: 0 8px 26px rgba(10, 31, 68, 0.08);
+    }
+
+    .pillar-card h3 {
+      color: var(--primary);
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .pillar-card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .timeline-step {
+      background: var(--white);
+      border: 1px solid #dbe5f0;
+      border-radius: 14px;
+      padding: 18px;
+      position: relative;
+      box-shadow: 0 6px 20px rgba(10, 31, 68, 0.05);
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--white);
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .timeline-step h4 {
+      font-size: 18px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .timeline-step p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .highlight {
+      background: #eaf7f2;
+      border: 1px solid #bfe6d7;
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .highlight ul {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      text-align: center;
+      background: var(--white);
+      border-radius: 12px;
+      padding: 18px 12px;
+      border: 1px solid #dbe5f0;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 28px;
+      color: var(--primary);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .cta {
+      background: linear-gradient(125deg, var(--primary), #196f9d);
+      color: var(--white);
+      border-radius: 18px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 14px 30px rgba(7, 39, 76, 0.2);
+    }
+
+    .cta h3 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .cta p {
+      opacity: 0.95;
+      margin-bottom: 16px;
+    }
+
+    .cta a {
+      display: inline-block;
+      background: var(--accent);
+      color: #2f2f2f;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 12px 22px;
+    }
+
+    footer {
+      background: #17202a;
+      color: #c6d2df;
+      text-align: center;
+      padding: 24px 14px;
+      margin-top: 46px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        min-height: 300px;
+      }
+
+      .quick-nav {
+        gap: 8px;
+      }
+
+      .quick-nav a {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <h1>Trung Tâm Đào Tạo Bác Sĩ</h1>
+      <p>
+        Chương trình đào tạo liên tục giúp đội ngũ bác sĩ cập nhật kỹ thuật mới,
+        nâng cao năng lực chẩn đoán và điều trị, hướng tới chất lượng chăm sóc bệnh nhân bền vững.
+      </p>
+    </div>
+  </header>
+
+  <nav class="quick-nav">
+    <a href="#tong-quan">Tổng quan</a>
+    <a href="#lo-trinh">Lộ trình</a>
+    <a href="#mo-hinh">Mô hình đào tạo</a>
+    <a href="#hieu-qua">Hiệu quả</a>
+    <a href="#dang-ky">Đăng ký</a>
+  </nav>
+
+  <main>
+    <section id="tong-quan">
+      <div class="container">
+        <h2 class="section-title">Định Hướng Đào Tạo</h2>
+        <p class="section-lead">
+          Đào tạo tại bệnh viện được thiết kế theo mô hình 70-20-10: 70% từ thực hành lâm sàng,
+          20% từ mentoring và hội chẩn liên khoa, 10% từ workshop học thuật và cập nhật hướng dẫn điều trị.
+        </p>
+
+        <div class="pillars">
+          <article class="pillar-card">
+            <h3>Lâm Sàng Chuẩn Hóa</h3>
+            <p>Hướng dẫn theo quy trình triage, phân tầng nguy cơ và bản đồ điều trị theo từng nhóm bệnh.</p>
+          </article>
+          <article class="pillar-card">
+            <h3>Công Nghệ Y Tế</h3>
+            <p>Đào tạo sử dụng hồ sơ bệnh án điện tử, AI hỗ trợ đọc hình ảnh và dashboard cảnh báo sớm.</p>
+          </article>
+          <article class="pillar-card">
+            <h3>An Toàn Người Bệnh</h3>
+            <p>Thực hành kiểm soát nhiễm khuẩn, quản lý sự cố y khoa và giải trình chất lượng điều trị.</p>
+          </article>
+          <article class="pillar-card">
+            <h3>Kỹ Năng Giao Tiếp</h3>
+            <p>Rèn luyện kỹ năng giao tiếp với bệnh nhân và gia đình trong các tình huống nhạy cảm.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="lo-trinh" style="background:#ffffff;">
+      <div class="container">
+        <h2 class="section-title">Lộ Trình Đào Tạo 6 Tháng</h2>
+        <p class="section-lead">
+          Mỗi bác sĩ tham gia chương trình sẽ được theo dõi năng lực theo từng giai đoạn và có mentor đồng hành.
+        </p>
+
+        <div class="timeline">
+          <article class="timeline-step">
+            <div class="step-badge">01</div>
+            <h4>Onboarding</h4>
+            <p>Đánh giá năng lực đầu vào, bố trí khoa phòng, xếp lịch shadowing với bác sĩ hướng dẫn.</p>
+          </article>
+          <article class="timeline-step">
+            <div class="step-badge">02</div>
+            <h4>Thực Hành Có Giám Sát</h4>
+            <p>Tham gia buổi khám, hội chẩn và lập kế hoạch điều trị dưới sự giám sát trực tiếp.</p>
+          </article>
+          <article class="timeline-step">
+            <div class="step-badge">03</div>
+            <h4>Đánh Giá Năng Lực</h4>
+            <p>OSCE nội bộ, đánh giá 360 độ và review số liệu ca bệnh để xác nhận mức độ sẵn sàng.</p>
+          </article>
+          <article class="timeline-step">
+            <div class="step-badge">04</div>
+            <h4>Cấp Chứng Nhận</h4>
+            <p>Hoàn tất khóa đào tạo, cấp chứng nhận và tiếp tục lộ trình CME hằng năm.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="mo-hinh">
+      <div class="container">
+        <h2 class="section-title">Mô Hình Đào Tạo Chuyên Sâu</h2>
+        <p class="section-lead">
+          Chương trình được chia theo nhóm chuyên khoa và mục tiêu năng lực, linh hoạt theo cấp bậc bác sĩ.
+        </p>
+
+        <div class="highlight">
+          <h3 style="color:var(--primary);">Chuyên đề trọng điểm</h3>
+          <ul>
+            <li>Chẩn đoán hình ảnh nâng cao cho bác sĩ nội, ngoại và cận lâm sàng.</li>
+            <li>Quản lý cấp cứu đa chấn thương và mô phỏng tình huống khẩn cấp.</li>
+            <li>Cập nhật hướng dẫn điều trị bệnh mạn tính: tim mạch, tiểu đường, hô hấp.</li>
+            <li>Kỹ năng hội chẩn liên khoa và trình bày ca bệnh theo evidence-based medicine.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="hieu-qua" style="background:#ffffff;">
+      <div class="container">
+        <h2 class="section-title">Chỉ Số Hiệu Quả Đào Tạo (Demo)</h2>
+        <p class="section-lead">
+          Số liệu demo phục vụ bài đồ án, giúp thể hiện mục tiêu chất lượng của trung tâm đào tạo bệnh viện.
+        </p>
+
+        <div class="metrics">
+          <article class="metric">
+            <strong>240+</strong>
+            <span>Bác sĩ đã tham gia</span>
+          </article>
+          <article class="metric">
+            <strong>36</strong>
+            <span>Workshop học thuật / năm</span>
+          </article>
+          <article class="metric">
+            <strong>92%</strong>
+            <span>Đánh giá đạt chuẩn sau khóa học</span>
+          </article>
+          <article class="metric">
+            <strong>18%</strong>
+            <span>Cải thiện tốc độ phân luồng cấp cứu</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="dang-ky">
+      <div class="container">
+        <div class="cta">
+          <h3>Tham Gia Chương Trình Đào Tạo</h3>
+          <p>
+            Đăng ký để nhận lịch workshop, bộ tài liệu cập nhật và thông tin mentor phù hợp với chuyên khoa.
+          </p>
+          <a href="mailto:daotao@benhvien.vn">Liên hệ phòng Đào tạo</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Bệnh Viện Đa Khoa E-Health | Nội dung demo cho đồ án môn học.
+  </footer>
+</body>
+</html>

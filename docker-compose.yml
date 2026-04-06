@@ -1,0 +1,69 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hospital_ehealth_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hospital_ehealth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hospital_ehealth"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hospital_ehealth_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 8080
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/hospital_ehealth
+      JWT_ACCESS_SECRET: replace_with_a_very_long_access_secret_key_123456789
+      JWT_REFRESH_SECRET: replace_with_a_very_long_refresh_secret_key_123456789
+      JWT_ACCESS_EXPIRES_IN: 30m
+      JWT_REFRESH_EXPIRES_IN_DAYS: 14
+      CLIENT_URL: http://localhost:5173
+      CLIENT_URLS: http://localhost:5173,http://127.0.0.1:5173
+      COOKIE_SECURE: "false"
+      LOGIN_MAX_FAILED_ATTEMPTS: 5
+      LOGIN_LOCK_MINUTES: 15
+      LOGIN_RATE_LIMIT_WINDOW_MS: 60000
+      LOGIN_RATE_LIMIT_MAX: 10
+      LAB_LOOKUP_RATE_LIMIT_WINDOW_MS: 60000
+      LAB_LOOKUP_RATE_LIMIT_MAX: 20
+      NOTIFICATION_QUEUE_ENABLED: "true"
+      NOTIFICATION_QUEUE_POLL_MS: 10000
+      NOTIFICATION_QUEUE_BATCH_SIZE: 20
+    ports:
+      - "8080:8080"
+    command: sh -c "npm run db:init && npm run start"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hospital_ehealth_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080/api/v1
+    ports:
+      - "5173:5173"
+
+volumes:
+  postgres_data:

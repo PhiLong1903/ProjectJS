@@ -1,0 +1,12 @@
+const express_1 = require("express");
+const roles_1 = require("../constants/roles");
+const authHandler_1 = require("../utils/authHandler");
+const validateHandler_1 = require("../utils/validateHandler");
+const cms_1 = require("../controllers/cms");
+const cms_validation_1 = require("../utils/validators/cms.validation");
+exports.cmsRoutes = express_1.Router();
+exports.cmsAdminRoutes = express_1.Router();
+exports.cmsRoutes.get("/pages/:pageKey", cms_1.cmsPageDetailController);
+exports.cmsAdminRoutes.use(authHandler_1.CheckLogin, authHandler_1.CheckRole(roles_1.ROLES.ADMIN));
+exports.cmsAdminRoutes.get("/pages", cms_1.listCmsPagesController);
+exports.cmsAdminRoutes.put("/pages/:pageKey", validateHandler_1.validateBody(cms_validation_1.cmsPageBodySchema), cms_1.upsertCmsPageController);

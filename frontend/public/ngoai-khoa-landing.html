@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khối Ngoại khoa - Bệnh viện ĐK KV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        surgical: {
+                            dark: '#0f4c5c',   // Xanh mòng két đậm
+                            main: '#2a9d8f',   // Xanh y tế (nhấn)
+                            light: '#e9f5f4',  // Nền nhạt
+                            accent: '#e76f51', // Cam san hô để tạo điểm nhấn cảnh báo/cấp cứu
+                            gray: '#5f6c7b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #2a9d8f; border-radius: 4px; }
+    
+        /* Accessibility + embedded UX */
+        :target {
+            scroll-margin-top: 110px;
+            animation: sectionPulse 1s ease;
+        }
+        @keyframes sectionPulse {
+            from { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0.35); }
+            to { box-shadow: 0 0 0 18px rgba(42, 157, 143, 0); }
+        }
+        a:focus-visible {
+            outline: 3px solid #2a9d8f;
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+        body.embed-mode #danh-sach-khoa {
+            top: 0 !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto !important; }
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body id="top" class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50 border-b-2 border-surgical-main">
+        <nav class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-surgical-main rounded-full flex items-center justify-center text-white font-bold text-xl">🏥</div>
+                <div>
+                    <h1 class="text-xl font-bold text-surgical-dark">BỆNH VIỆN ĐKKV THỦ ĐỨC</h1>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider">Khối Ngoại Khoa - Chuẩn xác & An toàn</p>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#" class="text-slate-600 hover:text-surgical-main font-medium">Trang chủ</a>
+                <a href="#danh-sach-khoa" class="text-slate-600 hover:text-surgical-main font-medium">Các Khoa</a>
+                <a href="#lien-he" class="bg-surgical-main text-white px-5 py-2 rounded-full hover:bg-teal-700 transition shadow-sm">Đặt lịch mổ/khám</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="bg-surgical-light py-20 md:py-28 border-b border-slate-200 overflow-hidden relative">
+        <div class="absolute inset-0 opacity-5">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs><pattern id="crossPattern" patternUnits="userSpaceOnUse" width="40" height="40"><path d="M15 5h10v10h10v10H25v10H15V25H5V15h10V5z" fill="#0f4c5c"/></pattern></defs>
+                <rect width="100%" height="100%" fill="url(#crossPattern)"/>
+            </svg>
+        </div>
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <span class="inline-block bg-white text-surgical-main text-sm font-bold px-5 py-1.5 rounded-full shadow-sm mb-5 border border-surgical-main/20 uppercase tracking-wide">
+                🔪 Bàn tay vàng - Hồi sinh sự sống
+            </span>
+            <h2 class="text-4xl md:text-6xl font-black text-surgical-dark mb-6 leading-tight tracking-tight">
+                TRUNG TÂM NGOẠI KHOA
+            </h2>
+            <p class="text-lg text-slate-700 max-w-3xl mx-auto mb-10 leading-relaxed">
+                Hệ thống phòng mổ vô khuẩn đạt chuẩn quốc tế cùng đội ngũ phẫu thuật viên, bác sĩ gây mê hồi sức hàng đầu. Chúng tôi ứng dụng các kỹ thuật mổ nội soi ít xâm lấn, robot phẫu thuật nhằm giảm thiểu đau đớn và rút ngắn thời gian hồi phục cho người bệnh.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#danh-sach-khoa" class="bg-surgical-main text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-teal-700 shadow-lg transition transform hover:-translate-y-0.5">
+                    Khám phá chuyên khoa
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="danh-sach-khoa" class="py-6 bg-white sticky top-[73px] z-40 shadow-sm border-b border-slate-100">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap gap-3 justify-center">
+                <a href="#khoa-ngoaitongquat" class="px-4 py-2 bg-slate-100 text-sm font-semibold rounded-full text-slate-700 hover:bg-surgical-dark hover:text-white transition">Ngoại Tổng quát</a>
+                <a href="#khoa-ctch" class="px-4 py-2 bg-slate-100 text-sm font-semibold rounded-full text-slate-700 hover:bg-surgical-dark hover:text-white transition">Chấn thương chỉnh hình</a>
+                <a href="#khoa-ngoainieu" class="px-4 py-2 bg-slate-100 text-sm font-semibold rounded-full text-slate-700 hover:bg-surgical-dark hover:text-white transition">Ngoại Tiết niệu</a>
+                <a href="#khoa-ngoaithankinh" class="px-4 py-2 bg-slate-100 text-sm font-semibold rounded-full text-slate-700 hover:bg-surgical-dark hover:text-white transition">Ngoại Thần kinh</a>
+                <a href="#khoa-ngoaillongnguc" class="px-4 py-2 bg-slate-100 text-sm font-semibold rounded-full text-slate-700 hover:bg-surgical-dark hover:text-white transition">Ngoại Lồng ngực - Mạch máu</a>
+                <a href="#khoa-gayme" class="px-4 py-2 bg-slate-100 text-sm font-semibold rounded-full text-slate-700 hover:bg-surgical-dark hover:text-white transition">Phẫu thuật - Gây mê hồi sức</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 py-16 space-y-24">
+
+        <script>
+            function renderSurgeons(doctors) {
+                return doctors.map(doc => `<span class="bg-white border border-slate-200 px-3 py-1.5 rounded-md text-sm text-slate-700 shadow-sm font-medium hover:border-surgical-main transition cursor-default">${doc}</span>`).join('');
+            }
+        </script>
+
+        <section id="khoa-ngoaitongquat" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-surgical-light rounded-bl-full -z-0"></div>
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-100 relative z-10">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-surgical-main text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg transform rotate-3">🩻</div>
+                    <div>
+                        <h3 class="text-3xl font-black text-surgical-dark">Khoa Ngoại Tổng Quát</h3>
+                        <p class="text-sm text-surgical-main font-bold italic mt-1">Slogan: "Phẫu thuật an toàn - Hồi phục nhanh chóng"</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-10 mb-10 text-slate-700">
+                <div class="md:col-span-7 prose max-w-none text-base">
+                    <p>Khoa Ngoại Tổng Quát là đơn vị nòng cốt của khối ngoại khoa, chuyên tiếp nhận khám, chẩn đoán và điều trị phẫu thuật các bệnh lý thuộc hệ tiêu hóa (dạ dày, ruột, đại trực tràng), gan mật tụy, tuyến giáp và các loại thoát vị.</p>
+                    <p>Với định hướng phát triển phẫu thuật ít xâm lấn, hiện nay <strong>hơn 85%</strong> các ca phẫu thuật tại khoa được thực hiện bằng phương pháp mổ nội soi, giúp bệnh nhân giảm đau tối đa, sẹo mổ thẩm mỹ và rút ngắn thời gian nằm viện chỉ còn 2-3 ngày.</p>
+                </div>
+                <div class="md:col-span-5 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <h5 class="font-bold text-surgical-dark mb-4 flex items-center gap-2">⭐ Các mũi nhọn chuyên sâu</h5>
+                    <ul class="space-y-3 text-sm text-slate-700">
+                        <li class="flex items-start gap-2"><span class="text-surgical-main">✓</span> Phẫu thuật nội soi cắt túi mật, sỏi ống mật chủ.</li>
+                        <li class="flex items-start gap-2"><span class="text-surgical-main">✓</span> Phẫu thuật cắt dạ dày, đại trực tràng nạo vét hạch do ung thư.</li>
+                        <li class="flex items-start gap-2"><span class="text-surgical-main">✓</span> Cấp cứu bụng ngoại khoa: Viêm ruột thừa, thủng tạng rỗng, tắc ruột.</li>
+                        <li class="flex items-start gap-2"><span class="text-surgical-main">✓</span> Mổ trĩ bằng phương pháp Longo, mổ rò hậu môn.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-surgical-light/30 p-8 rounded-2xl border border-surgical-main/10">
+                <h4 class="text-xl font-bold text-surgical-dark mb-6">👨‍⚕️ Đội ngũ Phẫu thuật viên</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-surgical-dark">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Trưởng khoa</p>
+                        <p class="text-lg font-black text-slate-900">TS.BS Lê Hoàng Quân</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-surgical-main">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Phó Trưởng khoa</p>
+                        <p class="text-lg font-black text-slate-900">BS.CKII Trần Đình Phúc</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-slate-400">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Điều dưỡng trưởng</p>
+                        <p class="text-lg font-black text-slate-900">CN.ĐD Phạm Thị Thu Hương</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-500 font-bold mb-3 uppercase tracking-wider">Bác sĩ phẫu thuật:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>document.write(renderSurgeons(["BS.CKI Nguyễn Trọng Trí", "BS.CKI Võ Văn Kiệt", "ThS.BS Đinh Thuận Phát", "BS Lê Khắc Duy", "BS Nguyễn Hà Phương", "BS Trần Minh Vũ", "BS Lâm Thanh Tùng"]));</script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-ctch" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36">
+            <div class="flex flex-col md:flex-row justify-between gap-6 mb-8 pb-6 border-b border-slate-100">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg transform -rotate-3">🦴</div>
+                    <div>
+                        <h3 class="text-3xl font-black text-surgical-dark">Khoa Ngoại Chấn Thương Chỉnh Hình</h3>
+                        <p class="text-sm text-orange-600 font-bold italic mt-1">Slogan: "Vững bước tương lai - Phục hồi vận động"</p>
+                    </div>
+                </div>
+                <div class="bg-orange-50 px-4 py-2 rounded-lg border border-orange-200 text-right h-fit">
+                    <p class="text-xs text-orange-800 font-bold uppercase">Trực cấp cứu chấn thương</p>
+                    <p class="text-xl font-black text-orange-600">24/7</p>
+                </div>
+            </div>
+
+            <div class="prose max-w-none text-slate-700 text-base mb-8">
+                <p>Tiếp nhận và xử trí tất cả các trường hợp đa chấn thương, gãy xương phức tạp do tai nạn giao thông, tai nạn lao động sinh hoạt. Đồng thời, khoa triển khai mạnh mẽ các phẫu thuật thay khớp nhân tạo và nội soi khớp kỹ thuật cao.</p>
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <h6 class="font-bold text-slate-900 mb-2">Phẫu thuật Thay khớp nhân tạo</h6>
+                        <p class="text-sm m-0">Thay khớp háng toàn phần/bán phần, thay khớp gối cho bệnh nhân thoái hóa khớp nặng hoặc hoại tử chỏm xương đùi, giúp bệnh nhân đi lại được ngay sau 2-3 ngày mổ.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <h6 class="font-bold text-slate-900 mb-2">Phẫu thuật Nội soi khớp</h6>
+                        <p class="text-sm m-0">Tái tạo dây chằng chéo trước/chéo sau khớp gối, khâu sụn chêm, phẫu thuật nội soi khớp vai điều trị rách chóp xoay, trật khớp vai tái hồi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surgical-light/30 p-8 rounded-2xl border border-surgical-main/10">
+                <h4 class="text-xl font-bold text-surgical-dark mb-6">👨‍⚕️ Đội ngũ chuyên gia Xương khớp</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-surgical-dark">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Trưởng khoa</p>
+                        <p class="text-lg font-black text-slate-900">BS.CKII Nguyễn Thành Nhân</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-slate-400">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Điều dưỡng trưởng</p>
+                        <p class="text-lg font-black text-slate-900">CN.ĐD Bùi Ngọc Tuyết</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex flex-wrap gap-2">
+                        <script>document.write(renderSurgeons(["BS.CKI Phan Viết Dũng", "BS.CKI Trương Thanh Tùng", "ThS.BS Lê Huỳnh Lộc", "BS Đỗ Xuân Trường", "BS Vũ Quốc Bảo", "BS Nguyễn Đình Khang"]));</script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-ngoainieu" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36">
+             <div class="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg">💧</div>
+                <div>
+                    <h3 class="text-3xl font-black text-surgical-dark">Khoa Ngoại Tiết Niệu</h3>
+                    <p class="text-sm text-blue-600 font-bold italic mt-1">Slogan: "Xóa tan nỗi lo sỏi thận - Lấy lại phong độ"</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-10 text-slate-700">
+                <div class="md:col-span-2">
+                    <p class="mb-4">Khoa Ngoại Tiết Niệu trang bị hệ thống máy tán sỏi laser công suất lớn, dàn máy nội soi Karl Storz (Đức), mang đến giải pháp điều trị <strong>sạch sỏi - không mổ mở</strong> tiên tiến nhất hiện nay.</p>
+                    <h6 class="font-bold text-slate-900 mt-6 mb-3">Kỹ thuật nổi bật đang áp dụng:</h6>
+                    <ul class="list-disc list-inside space-y-2 text-sm">
+                        <li><strong>Tán sỏi thận qua da (PCNL):</strong> Chỉ với vết rạch 0.5cm ở lưng, tán sạch sỏi san hô phức tạp.</li>
+                        <li><strong>Tán sỏi ngược dòng bằng ống soi mềm:</strong> Hoàn toàn không có vết mổ, tiếp cận sỏi ở mọi vị trí trong thận.</li>
+                        <li>Cắt đốt nội soi u xơ tiền liệt tuyến (TURP) bằng dao điện lưỡng cực / Laser.</li>
+                        <li>Phẫu thuật nội soi cắt nang thận, tạo hình khúc nối bể thận - niệu quản.</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 flex flex-col justify-center items-center text-center">
+                    <div class="text-4xl mb-3">🎯</div>
+                    <p class="text-2xl font-black text-blue-900 mb-1">98%</p>
+                    <p class="text-sm text-blue-800 font-medium">Tỷ lệ thành công tán sỏi nội soi, xuất viện sau 24-48 giờ.</p>
+                </div>
+            </div>
+
+             <div class="bg-surgical-light/30 p-8 rounded-2xl border border-surgical-main/10">
+                <h4 class="text-xl font-bold text-surgical-dark mb-6">👨‍⚕️ Đội ngũ Phẫu thuật viên Tiết niệu</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-surgical-dark">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Trưởng khoa</p>
+                        <p class="text-lg font-black text-slate-900">TS.BS Phạm Trí Kiên</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <script>document.write(renderSurgeons(["BS.CKII Lê Văn Bình", "BS.CKI Đặng Quang Huy", "BS.CKI Trần Trung Trực", "BS Nguyễn Thái Hòa", "BS Phạm Anh Tuấn"]));</script>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-ngoaithankinh" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-100">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg">🧠</div>
+                    <div>
+                        <h3 class="text-3xl font-black text-surgical-dark">Khoa Ngoại Thần Kinh</h3>
+                        <p class="text-sm text-purple-600 font-bold italic mt-1">Slogan: "Chính xác từng milimet - Giữ gìn hệ thần kinh"</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-slate-700 text-base mb-6 leading-relaxed">
+                Là chuyên khoa sâu đòi hỏi sự tinh tế và chính xác tuyệt đối. Khoa Ngoại Thần kinh chuyên cấp cứu sọ não, cột sống và phẫu thuật điều trị các bệnh lý thần kinh với sự hỗ trợ của hệ thống kính vi phẫu thuật thần kinh (Microscope), máy Navigation định vị thần kinh.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-10">
+                <div class="border border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                    <h6 class="font-bold text-slate-900 mb-3 border-b pb-2">🧠 Phẫu thuật Sọ não</h6>
+                    <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside">
+                        <li>Cấp cứu chấn thương sọ não (máu tụ ngoài/dưới màng cứng).</li>
+                        <li>Phẫu thuật vi phẫu u não, màng não.</li>
+                        <li>Phẫu thuật kẹp túi phình mạch máu não (Aneurysm clipping).</li>
+                        <li>Dẫn lưu não thất, đặt VP Shunt điều trị não úng thủy.</li>
+                    </ul>
+                </div>
+                <div class="border border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                    <h6 class="font-bold text-slate-900 mb-3 border-b pb-2">🦴 Phẫu thuật Cột sống - Tủy sống</h6>
+                    <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside">
+                        <li>Phẫu thuật chấn thương cột sống cổ, ngực, thắt lưng.</li>
+                        <li>Mổ hở và vi phẫu lấy khối thoát vị đĩa đệm, giải ép rễ thần kinh.</li>
+                        <li>Bơm xi măng sinh học tạo hình đốt sống xẹp do loãng xương.</li>
+                        <li>Phẫu thuật bóc u tủy sống.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-surgical-light/30 p-8 rounded-2xl border border-surgical-main/10">
+                <h4 class="text-xl font-bold text-surgical-dark mb-6">👨‍⚕️ Đội ngũ Phẫu thuật viên Thần kinh</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-surgical-dark md:col-span-2">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Trưởng khoa</p>
+                        <p class="text-lg font-black text-slate-900">PGS.TS.BS Hồ Vĩnh Khang</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <script>document.write(renderSurgeons(["BS.CKII Nguyễn Văn Lực", "ThS.BS Trương Hoàng Phong", "BS.CKI Lê Bảo Toàn", "BS Phạm Nhật Vượng", "BS Đinh Công Tuấn"]));</script>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-ngoaillongnguc" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36">
+            <div class="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100">
+                <div class="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg transform rotate-3">🫀</div>
+                <div>
+                    <h3 class="text-3xl font-black text-surgical-dark">Khoa Ngoại Lồng Ngực - Mạch Máu</h3>
+                    <p class="text-sm text-red-600 font-bold italic mt-1">Slogan: "Lưu thông dòng máu - Thở nhịp bình an"</p>
+                </div>
+            </div>
+
+            <div class="prose max-w-none text-slate-700 text-base mb-10">
+                <p>Khám, tư vấn và phẫu thuật các bệnh lý về phổi, trung thất, thành ngực và hệ thống mạch máu ngoại biên. Khoa đặc biệt có thế mạnh trong phẫu thuật nội soi lồng ngực (VATS) và can thiệp nội mạch.</p>
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mt-6 grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h6 class="font-bold text-slate-900 mb-2">Lồng ngực - Hô hấp</h6>
+                        <ul class="text-sm space-y-1 list-disc list-inside">
+                            <li>Phẫu thuật nội soi cắt thùy phổi do U.</li>
+                            <li>Cấp cứu tràn máu, tràn khí màng phổi.</li>
+                            <li>Nội soi cắt hạch giao cảm trị tăng tiết mồ hôi tay.</li>
+                            <li>Phẫu thuật lõm ngực bẩm sinh (Nuss procedure).</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="font-bold text-slate-900 mb-2">Mạch máu ngoại biên</h6>
+                        <ul class="text-sm space-y-1 list-disc list-inside">
+                            <li>Phẫu thuật/Can thiệp suy tĩnh mạch chi dưới (Laser/RF).</li>
+                            <li>Bắc cầu động mạch điều trị tắc hẹp động mạch chi.</li>
+                            <li>Tạo dò động tĩnh mạch (AVF) cho bệnh nhân chạy thận nhân tạo.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surgical-light/30 p-8 rounded-2xl border border-surgical-main/10">
+                <h4 class="text-xl font-bold text-surgical-dark mb-4">👨‍⚕️ Nhân sự chuyên môn</h4>
+                <div class="flex flex-wrap gap-2">
+                    <script>document.write(renderSurgeons(["BS.CKII Trần Quý Cáp (Trưởng khoa)", "BS.CKI Võ Thành Tâm", "ThS.BS Nguyễn Hữu Nghĩa", "BS Lê Thị Cẩm Tiên"]));</script>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-gayme" class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100 scroll-mt-36 border-t-8 border-t-surgical-main">
+            <div class="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100">
+                <div class="w-16 h-16 bg-surgical-dark text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg">🛡️</div>
+                <div>
+                    <h3 class="text-3xl font-black text-surgical-dark">Khoa Phẫu thuật - Gây mê hồi sức</h3>
+                    <p class="text-sm text-surgical-main font-bold italic mt-1">Slogan: "An toàn tuyệt đối - Gắn kết sinh mệnh"</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 mb-10 text-slate-700">
+                <div class="prose max-w-none text-base">
+                    <p>Trái tim của khối Ngoại khoa. Đảm nhận nhiệm vụ tổ chức, điều hành khu phẫu thuật, vô cảm (gây mê, gây tê) cho mọi ca mổ từ cấp cứu đến mổ chương trình, và hồi sức tích cực bệnh nhân sau mổ.</p>
+                    <p>Khoa sở hữu <strong>12 phòng mổ áp lực dương</strong> đạt chuẩn quốc tế, trang bị hệ thống máy gây mê kèm thở hiện đại, monitor theo dõi huyết động xâm lấn, đảm bảo an toàn tuyệt đối cho người bệnh trong suốt cuộc phẫu thuật.</p>
+                    <p>Đặc biệt, khoa triển khai hiệu quả chương trình <strong>Giảm đau sau mổ (PCA)</strong> và Gây tê vùng dưới hướng dẫn siêu âm, giúp bệnh nhân trải qua ca mổ nhẹ nhàng, không đau đớn.</p>
+                </div>
+                <div>
+                    <img src="https://images.unsplash.com/photo-1551076805-e18690c5e561?auto=format&fit=crop&q=80&w=800" alt="Phòng mổ hiện đại" class="rounded-2xl shadow-md border border-slate-200 object-cover h-64 w-full">
+                    <p class="text-xs text-center text-slate-500 mt-2 italic">*Ảnh minh họa phòng mổ tiêu chuẩn</p>
+                </div>
+            </div>
+
+            <div class="bg-surgical-light/30 p-8 rounded-2xl border border-surgical-main/10">
+                <h4 class="text-xl font-bold text-surgical-dark mb-6">👨‍⚕️ Đội ngũ Bác sĩ & Kỹ thuật viên GMHS</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-surgical-dark">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Trưởng khoa</p>
+                        <p class="text-lg font-black text-slate-900">BS.CKII Huỳnh Vĩnh Trung</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-slate-400">
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">KTV Trưởng</p>
+                        <p class="text-lg font-black text-slate-900">Cử nhân KTV. Trần Thị Kim Oanh</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-500 font-bold mb-3 uppercase tracking-wider">Bác sĩ Gây mê hồi sức:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>document.write(renderSurgeons(["BS.CKI Đặng Kim Phượng", "BS.CKI Lưu Tiến Dũng", "ThS.BS Nguyễn Thanh Hằng", "BS Lê Hoài Nam", "BS Ngô Tấn Lợi", "BS Bùi Thu Trang", "BS Đào Ngọc Tín", "BS Phạm Đức Hiếu"]));</script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <section id="lien-he" class="bg-surgical-dark py-20 text-white mt-16 scroll-mt-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-black mb-6">Chuyên Môn Sâu - Phẫu Thuật An Toàn</h2>
+            <p class="text-xl text-teal-100 max-w-2xl mx-auto mb-12">Hãy để lại thông tin hoặc gọi điện trực tiếp, đội ngũ Bác sĩ Ngoại khoa của chúng tôi sẽ tư vấn phương pháp điều trị tối ưu nhất cho bạn.</p>
+            <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl text-white border border-white/20">
+                    <div class="text-4xl mb-3">📞</div>
+                    <p class="text-sm text-teal-200 uppercase tracking-widest font-bold mb-1">Hotline Tổng Đài</p>
+                    <a href="tel:02838966894" class="text-2xl font-black hover:text-surgical-main transition">(028) 3896 6894</a>
+                </div>
+                <div class="bg-surgical-accent p-6 rounded-2xl text-white shadow-2xl transform scale-105">
+                    <div class="text-4xl mb-3">🚑</div>
+                    <p class="text-sm text-white/80 uppercase tracking-widest font-bold mb-1">Cấp Cứu Ngoại Khoa</p>
+                    <p class="text-2xl font-black">24/7</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl text-white border border-white/20">
+                    <div class="text-4xl mb-3">✉️</div>
+                    <p class="text-sm text-teal-200 uppercase tracking-widest font-bold mb-1">Gửi Hồ Sơ / MRI / X-Quang</p>
+                    <a href="mailto:ngoaikhoa@benhvienthuduc.vn" class="text-lg font-bold hover:text-surgical-main transition break-words">ngoaikhoa@benhvienthuduc.vn</a>
+                </div>
+            </div>
+            <div class="mt-16">
+                 <a href="#top" class="inline-flex items-center gap-2 text-teal-200 hover:text-white font-semibold transition">
+                    <span>↑ Quay lên đầu trang</span>
+                 </a>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        (function () {
+            var isEmbedded = new URLSearchParams(window.location.search).get("embed") === "1";
+            if (isEmbedded) {
+                document.body.classList.add("embed-mode");
+            }
+            var timeoutId;
+            var postMetrics = function () {
+                if (window.parent === window) {
+                    return;
+                }
+                var height = Math.max(
+                    document.documentElement.scrollHeight,
+                    document.body.scrollHeight,
+                    document.documentElement.offsetHeight,
+                    document.body.offsetHeight
+                );
+                window.parent.postMessage(
+                    {
+                        type: "NGOAI_KHOA_LANDING_METRICS",
+                        height: height,
+                        hash: window.location.hash || "#",
+                        href: window.location.href,
+                        title: document.title
+                    },
+                    "*"
+                );
+            };
+            var requestPost = function () {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(postMetrics, 80);
+            };
+            window.addEventListener("load", requestPost);
+            window.addEventListener("resize", requestPost);
+            window.addEventListener("hashchange", requestPost);
+            if (window.MutationObserver) {
+                var observer = new MutationObserver(requestPost);
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    characterData: true
+                });
+            }
+            requestPost();
+        })();
+    </script>
+</body>
+</html>

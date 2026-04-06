@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khối Nội khoa - Bệnh viện ĐK KV Thủ Đức</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            blue: '#0056b3', // Màu xanh y tế đậm
+                            light: '#e6f0ff', // Màu nền xanh nhạt
+                            teal: '#008080', // Màu nhấn
+                            gray: '#6c757d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Tùy chỉnh font cơ bản cho cảm giác y tế sạch sẽ */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Style cho thanh cuộn */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0056b3;
+            border-radius: 4px;
+        }
+    
+        /* Accessibility + embedded UX */
+        :target {
+            scroll-margin-top: 110px;
+            animation: sectionPulse 1s ease;
+        }
+        @keyframes sectionPulse {
+            from { box-shadow: 0 0 0 0 rgba(0, 86, 179, 0.28); }
+            to { box-shadow: 0 0 0 16px rgba(0, 86, 179, 0); }
+        }
+        a:focus-visible {
+            outline: 3px solid #008080;
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+        body.embed-mode #danh-sach-khoa {
+            top: 0 !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto !important; }
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body id="top" class="bg-slate-50 text-slate-800">
+
+
+    <section class="bg-medical-light py-16 md:py-24 border-b border-slate-200 overflow-hidden relative">
+        <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="dotPattern" patternUnits="userSpaceOnUse" width="32" height="32"><circle cx="1" cy="1" r="1" fill="#0056b3"/></pattern></defs><rect width="100%" height="100%" fill="url(#dotPattern)"/></svg>
+        </div>
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <span class="inline-block bg-white text-medical-teal text-sm font-semibold px-4 py-1 rounded-full shadow-sm mb-4 border border-medical-teal/20">🏥 Chăm sóc sức khỏe toàn diện</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-blue-950 mb-6 leading-tight">
+                KHỐI NỘI KHOA
+            </h2>
+            <p class="text-lg text-slate-700 max-w-3xl mx-auto mb-10 leading-relaxed">
+                Nơi quy tụ đội ngũ bác sĩ chuyên khoa giỏi, dày dạn kinh nghiệm, luôn tận tâm và chu đáo trong công tác khám, chữa bệnh. Chúng tôi cam kết ứng dụng công nghệ tiên tiến nhất vì sức khỏe của bạn.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#danh-sach-khoa" class="bg-medical-blue text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-blue-700 shadow-lg transition transform hover:-translate-y-0.5">
+                    Xem các chuyên khoa sâu
+                </a>
+                <a href="#lien-he" class="bg-white text-medical-blue px-8 py-3 rounded-full font-bold text-lg hover:bg-slate-50 shadow-md border border-slate-200 transition">
+                    Liên hệ tư vấn
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="danh-sach-khoa" class="py-12 bg-white sticky top-[73px] z-40 shadow-sm border-b border-slate-100">
+        <div class="container mx-auto px-4">
+            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-widest text-center mb-6">Truy cập nhanh các khoa</h3>
+            <div class="flex flex-wrap gap-2 justify-center">
+                <a href="#khoa-khambenh" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Khám bệnh</a>
+                <a href="#khoa-capcuu" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Cấp cứu</a>
+                <a href="#khoa-hoisuctichcuc" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Hồi sức - Chống độc</a>
+                <a href="#khoa-noitonghop" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Nội tổng hợp</a>
+                <a href="#khoa-noithankinh" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Nội thần kinh</a>
+                <a href="#khoa-noitimmach" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Nội Tim mạch</a>
+                <a href="#khoa-timmachcanthiep" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Tim Mạch Can Thiệp</a>
+                <a href="#khoa-noitieuhoa" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Nội Tiêu hóa</a>
+                <a href="#khoa-noithan" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Nội thận</a>
+                <a href="#khoa-noitiet" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Nội tiết</a>
+                <a href="#khoa-nhiem" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Khoa Nhiễm</a>
+                <a href="#khoa-phuchoi" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">PHCN</a>
+                <a href="#khoa-nhi" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Khoa Nhi</a>
+                <a href="#khoa-yhct" class="px-3 py-1 bg-slate-100 text-xs font-medium rounded-full text-slate-700 hover:bg-medical-blue hover:text-white transition">Y học cổ truyền</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 py-12 md:py-16 space-y-20">
+
+        <script>
+            // Hàm helper để render danh sách bác sĩ điều trị
+            function renderDoctors(doctors) {
+                return doctors.map(doc => `<span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">${doc}</span>`).join('');
+            }
+        </script>
+
+        <section id="khoa-khambenh" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-medical-light text-medical-blue rounded-full flex items-center justify-center text-3xl shadow-inner border border-medical-blue/10">📋</div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-950">Khoa Khám bệnh</h3>
+                        <p class="text-sm text-medical-teal font-semibold italic">Slogan: “Chuyên nghiệp - Tận tâm - Chu đáo”</p>
+                    </div>
+                </div>
+                <a href="#lien-he" class="text-sm bg-medical-blue/10 text-medical-blue px-5 py-2 rounded-full font-semibold hover:bg-medical-blue/20">Đặt lịch khám tại đây</a>
+            </div>
+
+            <div class="prose max-w-none text-slate-700 leading-relaxed mb-10">
+                <p>Là một trong những khoa nòng cốt của Bệnh viện, Khoa khám bệnh không ngừng cải tiến các quy trình, ứng dụng công nghệ thông tin trong công tác khám, chữa bệnh.</p>
+                <p>Chúng tôi luôn tự hào vì có một đội ngũ bác sĩ giỏi, dày dạn kinh nghiệm ở tất cả các chuyên khoa sâu.</p>
+                <p>Với quyết tâm không ngừng đổi mới, luôn phục vụ tốt nhất cho người bệnh, chúng tôi đã thay đổi mạnh cả về cơ sở vật chất và hướng tới một phong cách phục vụ tận tâm và chuyên nghiệp nhằm ngày một nâng cao sự hài lòng của người bệnh.</p>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-medical-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Đội ngũ nhân sự Key
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS CKII. Nguyễn Xuân Quốc</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-teal">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phó Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS.CKI Châu Thị Kim Trang</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng</p>
+                        <p class="text-lg font-bold text-slate-900">CN ĐD. Huỳnh Thị Bích Hạnh</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS CKI. Trần Thị Tú</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS. Nguyễn Tiến Hoàn</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS CKII. Lê Thị Thúy Lan</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS.CKI Huỳnh Thị Kiều Giang</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS. Lê Phúc An</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS.CKII Nguyễn Văn Phụng</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS. Nguyễn Thị Hà Phương</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS. Nguyễn Thị Lan</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS. Nguyễn Thị Hiền</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS.CKI Nguyễn Thị Tuyết Dung</span>
+                        <span class="bg-white border border-slate-200 px-3 py-1 rounded text-sm text-slate-700 shadow-sm">BS. Trần Thị Thu Thủy</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-capcuu" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center text-3xl shadow-inner border border-red-200">🚑</div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-950">Khoa Cấp cứu</h3>
+                        <p class="text-sm text-red-600 font-semibold italic">Slogan: "Khẩn trương, an toàn và hiệu quả"</p>
+                        <p class="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded inline-block mt-1 font-bold">Hoạt động 24/24</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-slate-500 uppercase font-semibold">Hotline Cấp cứu (115)</p>
+                    <a href="tel:02838966894" class="text-2xl font-black text-red-600 hover:text-red-700">+(84) 28 38966894</a>
+                </div>
+            </div>
+
+            <div class="prose max-w-none text-slate-700 leading-relaxed mb-10">
+                <p>Khoa Cấp Cứu hoạt động 24/24, cho tất cả các đối tượng có tình trạng sức khỏe cấp tính đe dọa đến tính mạng, vào tất cả các ngày trong năm kể cả ngày lễ, tết.</p>
+                <p>Tất cả bệnh nhân tại Khoa cấp cứu được xử trí, duy trì ổn định, điều trị cho đến khi chuyển sang thăm khám ngoại trú, lưu viện hoặc chuyển viện tùy theo tình trạng y tế cũng như nhu cầu của từng bệnh nhân.</p>
+                <blockquote class="bg-red-50 border-l-4 border-red-500 text-red-950 p-4 rounded text-sm font-medium">
+                    Nếu bạn gặp những vấn đề khẩn cấp về tình trạng sức khỏe như tai nạn, bệnh cấp tính nghiêm trọng, bị thương, hãy gọi ngay số hotline phía trên để được hỗ trợ cấp cứu ngoài viện hoặc đến ngay khoa để được xử lý kịp thời.
+                </blockquote>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ nhân sự</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phụ trách khoa</p>
+                        <p class="text-lg font-bold text-slate-900">Ths.BS. Nguyễn Lê Hoàng Phi</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng</p>
+                        <p class="text-lg font-bold text-slate-900">CN ĐD. Dương Thị Bội Lộc</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị (Đội ngũ hùng hậu sẵn sàng 24/7):</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-sm text-slate-700">
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. CKI Phạm Thi Thu</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Trương Cao Đường</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS.CKI Nguyễn Bảo Vinh</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Nguyễn Thị Vân Anh</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Hà Chí Trung</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Phạm Thị Ngọc Trinh</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Lê Trần Thị Thùy Linh</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Võ Ngọc Tường Vy</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Mai Ngọc Bảo Vy</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Đoàn Thanh Sang</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Thang Kim Trang</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">ThS.BS Phạm Thị Ngọc Linh</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Nguyễn Kiều Linh</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Đỗ Trần Công Trọng</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS. Nguyễn Trọng Thức</span>
+                        <span class="border border-slate-200 bg-white p-2 rounded">BS.CKI Trần Thị Bích Thủy</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-hoisuctichcuc" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="w-16 h-16 bg-medical-light text-medical-teal rounded-full flex items-center justify-center text-3xl shadow-inner">🫁</div>
+                <div>
+                    <h3 class="text-3xl font-bold text-blue-950">Khoa Hồi sức tích cực – Chống độc</h3>
+                    <p class="text-sm text-medical-teal font-semibold italic">Slogan: "Tích cực đến cùng"</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-10 text-slate-700 leading-relaxed">
+                <div class="md:col-span-2 prose max-w-none">
+                    <p>Khoa lâm sàng điều trị và chăm sóc tích cực cho những người bệnh nội - ngoại khoa nặng, hỗ trợ chuyên môn và phối hợp điều trị cho các khoa lâm sàng.</p>
+                    <p>Bệnh nhân nằm tại khoa chúng tôi luôn được thăm khám, theo dõi, điều trị, chăm sóc toàn diện và liên tục 24/24 bởi đội ngũ đầy tâm huyết, được đào tạo chuyên sâu.</p>
+                </div>
+                <div class="bg-slate-100 p-5 rounded-lg border border-slate-200 space-y-3">
+                    <h5 class="font-bold text-sm uppercase text-slate-600 border-b border-slate-300 pb-2">Quy mô & Trang bị</h5>
+                    <p class="text-sm"><strong>30 giường bệnh</strong> chia 4 khu vực: Hồi sức Nội & Chống độc, Hồi sức Ngoại, Hồi sức Ngoại thần kinh, Khu cách ly.</p>
+                    <p class="text-xs text-slate-600 font-mono bg-white p-2 rounded border border-slate-200">Trang bị: Bơm tiêm tự động, Monitor, Máy thở, Máy lọc máu, Máy lọc thận, Hạ thân nhiệt, ECMO...</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 overflow-hidden relative">
+                 <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ nhân sự</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phụ trách khoa</p>
+                        <p class="text-lg font-bold text-slate-900">ThS.BS CKII Nguyễn Quý</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-teal hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phó Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS CKI. Nguyễn Thị Thanh Tú</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">CN ĐD. Nguyễn Thị Hoa</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>
+                            document.write(renderDoctors(["BS.CKI Đinh Trung Hiếu","BS. CKI Lê Minh Trí","BS. Lê Thanh Khôi","BS. Lê Duy Khương","BS. Nguyễn Tiến Đạt","BS. Phạm Hoàng Minh","BS.CKI Nguyễn Khắc Tuấn Tài","ThS.BS Nguyễn Thị Đài Trang","BS. Phạm Thị Thảo","BS.CKI Tôn Thị Thanh","BS.CKI Trần Thị Yến","BS. Huỳnh Võ Bích Phương","BS. Nguyễn Thị Hoài Thương"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-noitonghop" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="w-16 h-16 bg-medical-light text-medical-blue rounded-full flex items-center justify-center text-3xl shadow-inner">🏥</div>
+                <div>
+                    <h3 class="text-3xl font-bold text-blue-950">Khoa Nội tổng hợp</h3>
+                    <p class="text-sm text-medical-teal font-semibold italic">Slogan: “Tận tâm chăm sóc - Tận tình lắng nghe”</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-10 text-slate-700 leading-relaxed">
+                <div class="prose max-w-none">
+                    <p>Khoa có bề dày kinh nghiệm, chức năng khám và điều trị các bệnh thuộc chuyên khoa <strong>hô hấp và thần kinh</strong>.</p>
+                    <p>Chúng tôi luôn lấy sự vui vẻ và thân thiện làm chuẩn mực trong chăm sóc người bệnh. Khoa còn là môi trường đào tạo thực hành cho các trường Đại học, Cao đẳng y khoa.</p>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800 mb-4 flex items-center gap-2">🛠️ Trang thiết bị hiện có</h5>
+                    <ul class="space-y-2 text-sm list-disc list-inside text-slate-700">
+                        <li>Máy đo chức năng hô hấp</li>
+                        <li>Máy đo điện não</li>
+                        <li>Máy đo điện cơ</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ quản lý & điều trị</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS. CKII Đặng Đức Khiêm</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">CN ĐD. Hoàng Thị Luyên</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>
+                            document.write(renderDoctors(["BS. Nguyễn Vĩnh Thân","BS. Trần Quốc Huy","BS. Lê Thành Quang","BS. Nguyễn Thị Tường Vi","BS. Nguyễn Gia Bảo","BS. Lữ Đức Anh Vy","BS. Võ Hoàng Minh Quân"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-noithankinh" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-blue-50 text-blue-800 rounded-full flex items-center justify-center text-3xl shadow-inner border border-blue-100">🧠</div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-950">Khoa Nội thần kinh</h3>
+                        <p class="text-sm text-medical-teal font-semibold italic">Slogan: "Vì một hệ thần kinh khỏe"</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-yellow-900">
+                    <span class="text-3xl">🏅</span>
+                    <div>
+                        <p class="font-bold text-sm">Thành tựu xuất sắc</p>
+                        <p class="text-xs">"Chứng nhận Vàng" & "Bạch Kim" (WSO) về Đột quỵ</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-10 text-slate-700 leading-relaxed">
+                <div class="prose max-w-none text-sm space-y-4">
+                    <p>Khoa không ngừng nâng cao chất lượng chuyên môn, phục vụ và nghiên cứu y học, hướng tới sự hài lòng người bệnh.</p>
+                    <p><strong>Cơ sở hạ tầng:</strong> 60 giường bệnh (4 giường cấp cứu), 11 phòng bệnh (5 phòng dịch vụ), 2 phòng khám.</p>
+                    <p class="font-semibold text-slate-900">Chức năng nhiệm vụ:</p>
+                    <ul class="list-disc list-inside">
+                        <li>Cấp cứu đột quỵ, bệnh lý mạch máu não (tiêu huyết khối & can thiệp nội mạch DSA).</li>
+                        <li>Điều trị các bệnh: tai biến, đau đầu, chóng mặt, mất ngủ, thoát vị đĩa đệm, Parkinson, động kinh, liệt dây thần kinh...</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800 mb-4 flex items-center gap-2">🚀 Phương pháp điều trị kỹ thuật cao</h5>
+                    <ul class="space-y-2 text-sm list-disc list-inside text-slate-700">
+                        <li><strong>Thuốc tiêu sợi huyết</strong> đường tĩnh mạch cho bệnh nhân thiếu máu não cục bộ cấp (<= 4,5 giờ).</li>
+                        <li>Chụp và can thiệp các bệnh lý mạch máu não (<strong>DSA</strong>).</li>
+                        <li><strong>Thay huyết tương</strong> điều trị các bệnh thần kinh cơ nặng (phối hợp khoa HS Tích cực).</li>
+                        <li>Đo điện cơ, điện não đồ.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:shadow-lg transition">
+                 <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Nhân sự khoa (18 nhân viên)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phụ trách khoa</p>
+                        <p class="text-lg font-bold text-slate-900">Bs CKI. Vũ Văn Thoại</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">ĐD Nguyễn Thị Ngọc Hiền</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>
+                            document.write(renderDoctors(["BS. Nhâm Thị Cẩm Vân","BS Võ Trần Hồng Quân","BS Hồ Xuân Minh Hoàng","BS Lê Thị Chung","BS. Nguyễn Hoài Nam","BS. Tôn Nữ Hồng Châu"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-noitimmach" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center text-3xl shadow-inner">❤️</div>
+                <div>
+                    <h3 class="text-3xl font-bold text-blue-950">Khoa Nội Tim mạch</h3>
+                    <p class="text-sm text-red-600 font-semibold italic">Tiêu chí: "Tất cả vì một trái tim khoẻ"</p>
+                </div>
+            </div>
+
+            <div class="prose prose-sm max-w-none text-slate-700 leading-relaxed grid md:grid-cols-2 gap-x-8 mb-10">
+                <div>
+                    <p>Được thành lập từ năm 1999, khoa trải qua nhiều thăng trầm, hiện hữu nguồn nhân lực trẻ, nhiệt huyết, không ngừng học tập để hoà nhập và phát triển.</p>
+                    <p><strong>Cơ cấu:</strong> 31 nhân viên, 65 giường bệnh nội trú, 1 phòng Hồi sức Tim mạch (mức 1).</p>
+                    <p class="font-semibold text-slate-900">Chức năng - Nhiệm vụ:</p>
+                    <ul class="list-disc list-inside">
+                        <li><strong>Ngoại trú:</strong> 4 bàn khám hoạt động 5 ngày/tuần và thứ 7 ngoài giờ.</li>
+                        <li><strong>Thăm dò chức năng tại khoa:</strong> Siêu âm tim, holter điện tim/huyết áp, điện tâm đồ gắng sức.</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-900">Định hướng phát triển:</p>
+                    <ul class="list-disc list-inside">
+                        <li>Xây dựng các chương trình quản lý tăng huyết áp, suy tim, van tim, rối loạn nhịp, huyết khối.</li>
+                        <li>Mở rộng siêu âm tim qua ngã thực quản, phát triển Hồi sức tim mạch mức II, phục hồi chức năng tim mạch.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ y bác sĩ (14 Bác sĩ)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS CKII. Nguyễn Quỳnh Dao</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">CN ĐD. Hoàng Thị Nga</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <script>
+                            document.write(renderDoctors(["Bs CKI. Nguyễn Văn Thanh","BS. Nguyễn Đỗ Thùy Linh","BS. Bùi Thị Hồng Phương","BS. Trần Minh Trí","BS. Thanh Thị Thu Trang","BS. Phạm Văn Phúc","BS. Nguyễn Mai Trang","BS. Nguyễn Đoàn Bách Trung","BS. Lương Thị Lê Khanh","BS. Lê Khắc Toàn Thắng","BS. Võ Trần Hoàng Lâm","BS. Nguyễn Thị Hoàng Yến","BS. Nguyễn Mạnh Cường"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-timmachcanthiep" class="bg-slate-100 p-8 rounded-2xl border border-slate-200 scroll-mt-28">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-white text-red-600 rounded-full flex items-center justify-center text-3xl shadow-inner border border-slate-200">💓</div>
+                <div>
+                    <h3 class="text-3xl font-bold text-blue-950">Khoa Tim Mạch Can Thiệp</h3>
+                    <p class="text-sm text-medical-teal font-semibold italic">Slogan: "Sáng y đức - Vững chuyên môn"</p>
+                </div>
+            </div>
+            <p class="text-sm text-slate-600 mt-4">Nội dung đang được cập nhật. Vui lòng liên hệ bệnh viện để biết thêm chi tiết.</p>
+        </section>
+
+        <section id="khoa-noitieuhoa" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="w-16 h-16 bg-green-50 text-green-700 rounded-full flex items-center justify-center text-3xl shadow-inner">🟢</div>
+                <div>
+                    <h3 class="text-3xl font-bold text-blue-950">Khoa Nội Tiêu hóa</h3>
+                    <p class="text-sm text-medical-teal font-semibold italic">Slogan: “Tận tâm, tận lực vì một hệ tiêu hóa khỏe”</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-10 text-slate-700 leading-relaxed">
+                <div class="prose prose-sm max-w-none">
+                    <p>Đơn vị chuyên tầm soát, chẩn đoán, điều trị và chăm sóc bệnh nhân thuộc lĩnh vực chuyên khoa <strong>nội tiêu hóa và gan mật</strong>.</p>
+                    <p>Quy mô 60 giường bệnh, vị trí thoáng mát, đội ngũ nhân sự chuyên môn cao, nhiều kinh nghiệm, nhiệt tình, năng động.</p>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800 mb-2 flex items-center gap-2">🛠️ Điểm nhấn kỹ thuật</h5>
+                    <p class="text-sm text-slate-700">Trang bị đầy đủ thiết bị phục vụ người bệnh, đặc biệt là <strong>hệ thống nội soi tiêu hóa</strong> hiện đại, đảm bảo chất lượng chuyên môn.</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ quản lý & điều trị</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS CKI. Nguyễn Thị Bé</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng</p>
+                        <p class="text-lg font-bold text-slate-900">ĐDTH. Nguyễn Thị Thúy Nhàn</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>
+                            document.write(renderDoctors(["BS CKI. Nguyễn Thị Ngọc Dung","Bs CKI. Nguyễn Trung Tín","BS. Phạm Ngọc Thanh","BS. Trần Thị Vui","BS. Trần Thị Hòa","BS. Nguyễn Minh Nguyệt","BS. Trần Thị Yến"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-noithan" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="w-16 h-16 bg-medical-light text-medical-blue rounded-full flex items-center justify-center text-3xl shadow-inner">💧</div>
+                <div>
+                    <h3 class="text-3xl font-bold text-blue-950">Khoa Nội thận - Tiết niệu</h3>
+                    <p class="text-sm text-medical-teal font-semibold italic">Slogan: "Gần gũi - Lắng nghe - Chia sẻ"</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-10 text-slate-700 leading-relaxed">
+                <div class="prose prose-sm max-w-none">
+                    <p>Một trong những đơn vị đi đầu lĩnh vực khám và điều trị các bệnh lý: suy thận, viêm cầu thận, hội chứng thận hư, lupus ban đỏ, nhiễm trùng tiểu...</p>
+                    <p>Sứ mệnh mang đến cuộc sống khỏe mạnh, không ngừng nỗ lực trở thành nơi tin cậy cho người bệnh, giúp họ sớm hồi phục và cải thiện chất lượng cuộc sống.</p>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800 mb-4 flex items-center gap-2">🛠️ Công nghệ chạy thận tiên tiến (Đức)</h5>
+                    <ul class="space-y-2 text-sm text-slate-700 list-disc list-inside">
+                        <li>Máy chạy thận Dialog+ (BBRAUN - Đức)</li>
+                        <li>Máy chạy thận Fresenius 4008S (Fresenius Medical Care - Đức)</li>
+                        <li>Hệ thống nước RO được bảo hành định kỳ theo quy định Bộ y tế</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ chủ chốt</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue md:col-span-2">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">Bs.CKII Võ Thị Bạch Thúy</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 md:col-span-2 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">CN ĐD. Nguyễn Thị Thanh Nga</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-teal">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phó Trưởng khoa</p>
+                        <p class="text-base font-bold text-slate-900">BS.CKI Nguyễn Thị Bảo Thương</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-teal">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phó Trưởng khoa</p>
+                        <p class="text-base font-bold text-slate-900">BS.CKI Lê Thanh Nguyên</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>
+                            document.write(renderDoctors(["BS.CKI Đặng Thị Liên","BS. Phan Thị Huỳnh Mơ","BS. Phan Nguyễn Bảo Trâm"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-noitiet" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28 hover:shadow-2xl transition">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-purple-50 text-purple-700 rounded-full flex items-center justify-center text-3xl shadow-inner">🦋</div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-950">Khoa Nội tiết</h3>
+                        <p class="text-sm text-medical-teal font-semibold italic">Slogan: "Nội Tiết Chung Sức - Chung Lòng - Tận Tâm - Phục Vụ"</p>
+                        <p class="text-xs text-slate-600 mt-1">(& Đơn vị Nội Cơ-xương-khớp)</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 bg-purple-50 border border-purple-200 p-3 rounded-lg text-purple-900">
+                    <span class="text-3xl">🦶</span>
+                    <div>
+                        <p class="font-bold text-sm">Điểm mạnh đặc biệt</p>
+                        <p class="text-xs">Bảo tồn bàn chân Đái tháo đường & CLB bệnh nhân</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prose prose-sm max-w-none text-slate-700 leading-relaxed grid md:grid-cols-2 gap-x-8 gap-y-6 mb-10 text-sm">
+                <div class="bg-slate-100 p-5 rounded-lg border border-slate-200 md:col-span-2">
+                    <p class="font-bold text-slate-900 m-0 mb-3">Cơ sở hạ tầng & Chức năng:</p>
+                    <p class="m-0"><strong>Nội trú:</strong> 57 giường (7 phòng dịch vụ, 1 phòng theo dõi bệnh nặng). <strong>Ngoại trú:</strong> 4 phòng khám (2 thường, 2 dịch vụ). Chẩn đoán, điều trị bệnh lý Nội tiết & Cơ xương khớp.</p>
+                </div>
+                <div class="border border-slate-200 p-4 rounded-lg bg-white">
+                    <h5 class="font-semibold text-purple-950 m-0 mb-3 flex items-center gap-2">🎯 Lĩnh vực mũi nhọn</h5>
+                    <ul class="list-disc list-inside space-y-1 text-slate-600 m-0 p-0 text-xs">
+                        <li><strong>Nội tiết:</strong> Đái tháo đường & biến chứng; Bệnh tuyến giáp; Tuyến thượng thận (Cushing); Rối loạn lipid máu, nước - điện giải.</li>
+                        <li><strong>Nội Cơ xương khớp:</strong> Thoái hoá khớp; Loãng xương; Viêm khớp dạng thấp; Gút; Viêm bao gân.</li>
+                    </ul>
+                </div>
+                 <div class="border border-slate-200 p-4 rounded-lg bg-white">
+                    <h5 class="font-semibold text-green-950 m-0 mb-3 flex items-center gap-2">🏅 Thành tựu đạt được</h5>
+                    <ul class="list-disc list-inside space-y-1 text-slate-600 m-0 p-0 text-xs">
+                        <li>Điều trị cấp cứu thành công các biến chứng cấp Đái tháo đường, cơn bão giáp, suy thượng thận cấp.</li>
+                        <li><strong>Bảo vệ thành công bàn chân Đái tháo đường</strong>, ngăn kết cục đoạn chi.</li>
+                        <li>Triển khai: Tiêm nội khớp, đo mật độ loãng xương DEXA, truyền thuốc loãng xương, thuốc sinh học điều trị VKDT.</li>
+                        <li>CLB Đái tháo đường duy trì lâu dài nhất bệnh viện. Quản lý > 6000 lượt ngoại trú/tháng.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:shadow-lg transition">
+                 <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ nhân sự hùng hậu</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phụ trách khoa</p>
+                        <p class="text-lg font-bold text-slate-900">Bs.CKII Trương Bảo Anh Minh</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">CN.ĐD Vũ Thị Vân</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <script>
+                            document.write(renderDoctors(["BS.CKI Phùng Tấn Đức","BS. Nguyễn Thị Thơm","BS. Nguyễn Ngọc Ân","BS. Trần Thanh Thu My","Bs. Nguyễn Hoàng Ân","Bs.CKI Nguyễn Phương Chi","Bs. Trần Hửu Nhật Trường","Bs. Trần Lâm Hoàng Nhật","Bs. Phan Thiên An","Bs. Nguyễn Đỗ Thành Trung","Bs. Đặng Xuân Chí Đức","Bs. Phạm Đinh Hoài Thảo"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-nhiem" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-yellow-50 text-yellow-700 rounded-full flex items-center justify-center text-3xl shadow-inner border border-yellow-100">🦠</div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-950">Khoa Nhiễm</h3>
+                        <p class="text-sm text-medical-teal font-semibold italic">Khẩu hiệu: “Ngăn bệnh truyền nhiễm – Đạt điểm tận tâm”</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-yellow-900">
+                    <span class="text-3xl">🏅</span>
+                    <div>
+                        <p class="font-bold text-sm">Tập Thể Lao Động Xuất Sắc</p>
+                        <p class="text-xs">Bằng khen của UBND TP.HCM về phòng chống Covid-19</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prose max-w-none text-slate-700 leading-relaxed mb-10 text-sm space-y-4">
+                <p>Khoa hoạt động với 19 nhân sự cùng chỉ tiêu 80 giường bệnh. Khoa tiếp nhận và điều trị các bệnh lý truyền Nhiễm.</p>
+                <div class="bg-slate-100 p-4 rounded-lg border border-slate-200 flex flex-wrap gap-x-4 gap-y-1 font-semibold text-xs text-slate-800">
+                    <span>Sốt Xuất Huyết</span> <span>Nhiễm siêu vi</span> <span>Sởi</span> <span>Cúm</span> <span>Thuỷ đậu</span> <span>Uốn ván</span> <span>Viêm màng não mủ</span> <span>Dengue</span> <span>Viêm gan vi rút</span>
+                </div>
+                <p>Khoa luôn phấn đấu xây dựng một tập thể đoàn kết, vững vàng về chuyên môn. Hàng năm khoa đều cử nhân viên đi đào tạo, cập nhật và triển khai kỹ thuật mới, xây dựng khoa thành chuyên khoa sâu của bệnh viện.</p>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:shadow-lg transition">
+                 <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ nhân sự</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS.CKI Lê Văn Chương</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">CN.ĐD Nguyễn Thành Luân</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>
+                            document.write(renderDoctors(["BS.CKI Nguyễn Văn Trưởng","BS. Phạm Anh Thế","BS Ngô Nguyễn Ngọc Điệp","BS Huỳnh Minh Nhựt","BS Nguyễn Thị Thuỳ Trang","BS. Đỗ Thị Hồng Hạnh","BS Lê Mạnh Triệu","BS Nguyễn Hà Thanh Tâm"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-phuchoi" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28 hover:shadow-2xl transition">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-medical-light text-medical-teal rounded-full flex items-center justify-center text-3xl shadow-inner">🚶‍♂️</div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-950">Khoa Phục hồi chức năng</h3>
+                        <p class="text-sm text-medical-teal font-semibold italic">Slogan: “Phục hồi chức năng - Nâng tầm cuộc sống”</p>
+                    </div>
+                </div>
+                <div class="text-right bg-slate-100 p-3 rounded-lg border border-slate-200">
+                    <p class="text-xs text-slate-500 uppercase font-semibold">Công suất</p>
+                    <p class="text-lg font-black text-slate-900">~ 3500 <span class="text-xs font-normal">lượt/tháng</span></p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-10 text-sm text-slate-700 leading-relaxed">
+                <div class="prose prose-sm max-w-none space-y-3 border border-slate-200 p-5 rounded-lg bg-white">
+                    <p>Được thành lập riêng biệt từ tháng 05/2021, khoa có sứ mệnh giúp người bệnh phục hồi tối đa chức năng (đột quỵ não, đau mạn tính, cứng khớp…), tái hòa nhập cộng đồng và sống độc lập.</p>
+                    <p class="font-semibold text-slate-900 m-0">Phương pháp điều trị:</p>
+                    <ul class="list-disc list-inside m-0 p-0 text-slate-600">
+                        <li><strong>Vật lý trị liệu:</strong> Hồng ngoại, siêu âm, sóng ngắn, điện trị liệu, kéo giãn cột sống...</li>
+                        <li><strong>Vận động trị liệu:</strong> Tập vận động có trợ giúp/có kháng trở, vận động cột sống...</li>
+                        <li><strong>Hoạt động trị liệu.</strong></li>
+                    </ul>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800 mb-4 flex items-center gap-2">🛠️ Khám & điều trị các bệnh lý</h5>
+                    <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-xs text-slate-700">
+                        <span>Thoái hóa cột sống, khớp</span>
+                        <span>Thoát vị đĩa đệm</span>
+                        <span>Đau cổ gáy, vai, lưng</span>
+                        <span>Di chứng tai biến mạch máu não</span>
+                        <span>Di chứng bại não, vẹo cổ ở trẻ</span>
+                        <span>Liệt mặt (liệt dây VII)</span>
+                        <span>Hội chứng ống cổ tay, ngón tay lò xo</span>
+                        <span>PHCN sau chấn thương, phẫu thuật</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:shadow-lg transition relative overflow-hidden">
+                <div class="absolute top-3 right-3 bg-white p-2 rounded-full shadow border text-xs font-bold text-medical-blue">3 Bác sĩ | 7 Kĩ thuật viên</div>
+                 <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ chuyên môn</h4>
+                <div class="grid grid-cols-1 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Phụ trách khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS. Nguyễn Thị Thanh Mai</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <script>
+                            document.write(renderDoctors(["BS.CKI Lê Mạnh Hà","BS. Lê Minh Ngọc"]));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-nhi" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28 hover:shadow-2xl transition">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl shadow-inner">🧸</div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-950">Khoa Nhi</h3>
+                        <p class="text-sm text-medical-teal font-semibold italic">Slogan: “Bé khỏe - Mẹ vui - Nhân đôi hạnh phúc”</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 p-3 rounded-lg text-blue-900 font-bold text-sm">
+                    <span class="text-xl">⭐ Lĩnh vực mũi nhọn:</span>
+                    <span>Chăm sóc sơ sinh & Hồi sức nhi</span>
+                </div>
+            </div>
+
+            <div class="prose max-w-none text-slate-700 leading-relaxed mb-10 text-sm border-l-4 border-medical-light pl-6">
+                <p>Địa chỉ uy tín trong việc chăm sóc sức khỏe cho trẻ em từ 0 đến 15 tuổi.</p>
+                <p>Nơi quy tụ đội ngũ y bác sĩ giàu kinh nghiệm, tận tâm, cùng hệ thống trang thiết bị hiện đại, đáp ứng toàn diện nhu cầu khám chữa bệnh cho trẻ em trong tất cả các chuyên ngành nhi khoa. Đội ngũ luôn sẵn sàng đồng hành cùng các bé và gia đình trong những giai đoạn khó khăn nhất.</p>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:shadow-lg transition relative overflow-hidden">
+                <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Đội ngũ y bác sĩ hùng hậu (18 Bác sĩ)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS CKII. Bùi An</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">CN ĐD. Nguyễn Thị Hồng Sen</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-600 font-semibold mb-3">Đội ngũ Bác sĩ điều trị chuyên sâu:</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-sm text-slate-700 bg-white p-4 rounded-lg border">
+                        <span>Ths.BS. Nguyễn Hồng Tài</span> <span>BS CKI. Nguyễn Thanh Tuấn</span> <span>BS CKI. Lê Hồng Thiện</span> <span>BS CKI. Lê Thị Kim Ngân</span> <span>BS. Nguyễn Vũ Phương Uyên</span> <span>BS. Lê Quốc Tri</span> <span>BS. Nguyễn Thị Thảo Trang</span> <span>BS. Phùng Xương Đạt</span> <span>BS. Trần Nguyễn Phương Trinh</span> <span>BS. CKI Đỗ Thị Thu Thảo</span> <span>BS. Nguyễn Trần Phong Vinh</span> <span>BS. Phùng Quang Vinh</span> <span>ThS. BS Lương Yến Linh</span> <span>BS. CKI Bùi Trung Đức Hậu</span> <span>BS. Đào Mai Thúy Uyên</span> <span>BS. Phạm Thị Phương Dung</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoa-yhct" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 scroll-mt-28 hover:shadow-2xl transition">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-medical-light text-medical-teal rounded-full flex items-center justify-center text-3xl shadow-inner border border-medical-teal/10">☯️</div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-950">Khoa Y học cổ truyền</h3>
+                        <p class="text-sm text-medical-teal font-semibold italic">Slogan: “Chẩn trị tốt - Bấm huyệt hay - Hăng say điều trị”</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-10 text-slate-700 leading-relaxed text-sm">
+                <div class="prose prose-sm max-w-none space-y-3">
+                    <p>Thành lập năm 2011, khoa thực hiện chức năng, nhiệm vụ khám và điều trị các bệnh lý bằng các phương pháp y học cổ truyền kết hợp y học hiện đại.</p>
+                    <p>Khoa ngày càng phát triển về nhân sự, cơ sở vật chất, áp dụng nhiều phương pháp điều trị mới, hiệu quả, an toàn phục vụ nhân dân.</p>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800 mb-4 flex items-center gap-2">🛠️ Các kỹ thuật điều trị tại khoa</h5>
+                    <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-700 font-medium">
+                        <span>Thuốc Y học cổ truyền</span> <span>Điện châm/ Mãng châm</span> <span class="text-medical-blue font-bold">Cấy chỉ</span> <span>Hồng ngoại</span> <span>Chườm ngải</span> <span>Xoa bóp bấm huyệt</span> <span>Laser châm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border border-slate-200 p-5 rounded-lg mb-10 bg-white">
+                <h5 class="font-bold text-slate-800 mb-3 text-sm">Khám, chẩn đoán và điều trị nhóm bệnh:</h5>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-x-3 gap-y-1 text-xs text-slate-600 list-disc list-inside">
+                    <span>Thoái hóa (cột sống, khớp)</span> <span>Thoát vị đĩa đệm</span> <span>Đau cổ gáy, vai, lưng</span> <span>Đau khớp, cứng khớp</span> <span>Rối loạn giấc ngủ, đau đầu, tiền đình</span> <span>Viêm mũi xoang</span> <span>Di chứng tai biến mạch máu não</span> <span>Liệt mặt (dây VII)</span> <span>Hội chứng ống cổ tay, ngón tay lò xo</span>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:shadow-lg transition relative overflow-hidden">
+                 <h4 class="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">👨‍⚕️ Nhân sự khoa (08 nhân sự)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-medical-blue hover:shadow-lg transition relative">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">BS CKI. Hồ Ngọc Vân</p>
+                        <span class="absolute top-1 right-1 text-xs bg-medical-blue text-white px-1 rounded font-bold">Key</span>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-slate-400 hover:shadow-lg transition">
+                        <p class="text-xs text-slate-500 uppercase font-semibold">Điều dưỡng trưởng khoa</p>
+                        <p class="text-lg font-bold text-slate-900">CNĐD. Nguyễn Thị Thanh Vân</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <p class="text-sm text-slate-600 font-semibold mb-3">Bác sĩ điều trị (04 Bác sĩ):</p>
+                        <div class="flex flex-wrap gap-2">
+                             <script>
+                                document.write(renderDoctors(["BS. Phạm Thị Tường Vân","BS. Phạm Văn Duy","ThS. BS Lưu Thanh Thùy"]));
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <section id="lien-he" class="bg-medical-blue py-20 text-white mt-16 scroll-mt-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-extrabold mb-6">Bạn cần tư vấn hoặc đặt lịch khám hẹn?</h2>
+            <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-12">Đội ngũ y bác sĩ Khối Nội khoa Bệnh viện ĐKKV Thủ Đức luôn sẵn sàng lắng nghe và chăm sóc sức khỏe của bạn và gia đình với sự tận tâm nhất.</p>
+            <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-xl text-slate-900 shadow-xl">
+                    <div class="text-3xl mb-3">tel:</div>
+                    <p class="text-sm text-slate-500">Hotline Bệnh viện</p>
+                    <a href="tel:02838966894" class="text-xl font-bold text-medical-blue hover:text-blue-700">(028) 3896 6894</a>
+                </div>
+                <div class="bg-white p-6 rounded-xl text-slate-900 shadow-xl border-4 border-medical-teal">
+                    <div class="text-3xl mb-3">🚑</div>
+                    <p class="text-sm text-slate-500">Cấp cứu (24/7)</p>
+                    <a href="tel:02838966894" class="text-2xl font-black text-red-600 hover:text-red-700">(028) 3896 6894</a>
+                </div>
+                <div class="bg-white p-6 rounded-xl text-slate-900 shadow-xl">
+                    <div class="text-3xl mb-3">email:</div>
+                    <p class="text-sm text-slate-500">Đặt lịch / Hỗ trợ</p>
+                    <a href="mailto:bv.dkkvthuduc@tphcm.gov.vn" class="text-base font-bold text-medical-blue hover:text-blue-700 break-words">bv.dkkvthuduc@tphcm.gov.vn</a>
+                </div>
+            </div>
+            <a href="#top" class="inline-block mt-16 bg-white text-medical-blue px-10 py-4 rounded-full font-extrabold text-xl hover:bg-slate-50 shadow-2xl transition transform hover:-translate-y-1">
+                Quay lại đầu trang
+            </a>
+        </div>
+    </section>
+
+    <footer class="bg-blue-950 py-10 text-blue-200 border-t border-blue-900">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p class="font-bold text-lg text-white mb-2">BỆNH VIỆN ĐA KHOA KHU VỰC THỦ ĐỨC</p>
+            <p>Địa chỉ: Số 29 Phú Châu, P. Tam Phú, TP. Thủ Đức, TP. Hồ Chí Minh</p>
+            <p class="mt-1">Website chính thức: <a href="#" class="text-white hover:text-medical-light">www.benhvienthuduc.vn</a> (Placeholder)</p>
+            <p class="mt-8 text-xs text-blue-400">© 2024 Bệnh viện ĐKKV Thủ Đức. All rights reserved. Landing Page thiết kế dựa trên nội dung được cung cấp.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        (function () {
+            var isEmbedded = new URLSearchParams(window.location.search).get("embed") === "1";
+            if (isEmbedded) {
+                document.body.classList.add("embed-mode");
+            }
+            var timeoutId;
+            var postMetrics = function () {
+                if (window.parent === window) {
+                    return;
+                }
+                var height = Math.max(
+                    document.documentElement.scrollHeight,
+                    document.body.scrollHeight,
+                    document.documentElement.offsetHeight,
+                    document.body.offsetHeight
+                );
+                window.parent.postMessage(
+                    {
+                        type: "NOI_KHOA_LANDING_METRICS",
+                        height: height,
+                        hash: window.location.hash || "#",
+                        href: window.location.href,
+                        title: document.title
+                    },
+                    "*"
+                );
+            };
+            var requestPost = function () {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(postMetrics, 80);
+            };
+            window.addEventListener("load", requestPost);
+            window.addEventListener("resize", requestPost);
+            window.addEventListener("hashchange", requestPost);
+            if (window.MutationObserver) {
+                var observer = new MutationObserver(requestPost);
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    characterData: true
+                });
+            }
+            requestPost();
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+export const SectionTitle = ({ eyebrow, title, description, }) => (_jsxs("div", { className: "mb-8 max-w-3xl", children: [_jsx("p", { className: "inline-flex rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand-700", children: eyebrow }), _jsx("h2", { className: "mt-3 text-3xl font-extrabold text-slate-900 md:text-4xl", children: title }), description ? _jsx("p", { className: "mt-3 text-slate-600", children: description }) : null] }));
