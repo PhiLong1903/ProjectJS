@@ -41,7 +41,7 @@ NotificationJobModel.belongsTo(NotificationModel, { foreignKey: "notification_id
 NotificationJobModel.belongsTo(UserModel, { foreignKey: "user_id", as: "user" });
 AuditLogModel.belongsTo(UserModel, { foreignKey: "actor_user_id", as: "actor" });
 
-module.exports = {
+Object.assign(exports, {
   UserModel,
   PatientModel,
   DepartmentModel,
@@ -67,4 +67,4 @@ module.exports = {
   DoctorReviewModel,
   AuditLogModel,
   RecruitmentApplicationModel,
-};
+});

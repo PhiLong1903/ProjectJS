@@ -1,6 +1,6 @@
-const db_1 = require("../config/db");
+const db = require("../config/db");
 const writeAuditLog = async (input) => {
-    await db_1.query(`
+    await db.query(`
       INSERT INTO audit_logs (
         action,
         actor_user_id,

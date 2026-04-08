@@ -1,5 +1,5 @@
-const db_1 = require("../config/db");
-const env_1 = require("../config/env");
+const db = require("../config/db");
+const env = require("../config/env");
 const listNotificationJobs = async (limit, offset, status) => {
     const params = [];
     let whereClause = "";
@@ -8,7 +8,7 @@ const listNotificationJobs = async (limit, offset, status) => {
         whereClause = `WHERE nj.status = $${params.length}`;
     }
     const [rowsResult, countResult] = await Promise.all([
-        db_1.query(`
+        db.query(`
         SELECT
           nj.id,
           nj.notification_id,
@@ -31,7 +31,7 @@ const listNotificationJobs = async (limit, offset, status) => {
         ORDER BY nj.created_at DESC
         LIMIT $${params.length + 1} OFFSET $${params.length + 2}
       `, [...params, limit, offset]),
-        db_1.query(`
+        db.query(`
         SELECT COUNT(*)::text AS total
         FROM notification_jobs nj
         ${whereClause}
@@ -60,8 +60,8 @@ const sendMockNotification = (job) => {
     }
     return { success: true };
 };
-const processNotificationQueueBatch = async (limit = env_1.env.NOTIFICATION_QUEUE_BATCH_SIZE) => {
-    const client = await db_1.db.connect();
+const processNotificationQueueBatch = async (limit = env.env.NOTIFICATION_QUEUE_BATCH_SIZE) => {
+    const client = await db.db.connect();
     try {
         await client.query("BEGIN");
         const jobsResult = await client.query(`
@@ -186,14 +186,14 @@ const processNotificationQueueBatch = async (limit = env_1.env.NOTIFICATION_QUEU
 exports.processNotificationQueueBatch = processNotificationQueueBatch;
 let workerInterval = null;
 const startNotificationQueueWorker = () => {
-    if (!env_1.env.NOTIFICATION_QUEUE_ENABLED || workerInterval) {
+    if (!env.env.NOTIFICATION_QUEUE_ENABLED || workerInterval) {
         return;
     }
     workerInterval = setInterval(() => {
         void exports.processNotificationQueueBatch().catch((error) => {
             console.error("Notification queue processing failed:", error);
         });
-    }, env_1.env.NOTIFICATION_QUEUE_POLL_MS);
+    }, env.env.NOTIFICATION_QUEUE_POLL_MS);
     workerInterval.unref();
 };
 exports.startNotificationQueueWorker = startNotificationQueueWorker;

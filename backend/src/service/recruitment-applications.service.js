@@ -178,14 +178,12 @@ const getRecruitmentApplicationCvFileService = (applicationId) => getRecruitment
 const updateRecruitmentApplicationStatusService = (applicationId, payload, actorUserId) =>
   updateRecruitmentApplicationStatus(applicationId, payload, actorUserId);
 
-module.exports = {
-  createRecruitmentApplication,
-  listRecruitmentApplications,
-  findRecruitmentApplicationById,
-  getRecruitmentApplicationCvFile,
-  updateRecruitmentApplicationStatus,
-  createRecruitmentApplicationService,
-  getRecruitmentApplicationsAdmin,
-  getRecruitmentApplicationCvFileService,
-  updateRecruitmentApplicationStatusService,
-};
+exports.createRecruitmentApplication = createRecruitmentApplication;
+exports.listRecruitmentApplications = listRecruitmentApplications;
+exports.findRecruitmentApplicationById = findRecruitmentApplicationById;
+exports.getRecruitmentApplicationCvFile = getRecruitmentApplicationCvFile;
+exports.updateRecruitmentApplicationStatus = updateRecruitmentApplicationStatus;
+exports.createRecruitmentApplicationService = createRecruitmentApplicationService;
+exports.getRecruitmentApplicationsAdmin = getRecruitmentApplicationsAdmin;
+exports.getRecruitmentApplicationCvFileService = getRecruitmentApplicationCvFileService;
+exports.updateRecruitmentApplicationStatusService = updateRecruitmentApplicationStatusService;

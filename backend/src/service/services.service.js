@@ -1,11 +1,8 @@
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-const http_status_codes_1 = require("http-status-codes");
-const slugify_1 = __importDefault(require("slugify"));
-const sequelize_1 = require("sequelize");
-const app_error_1 = require("../utils/app-error");
-const SequelizeModels_1 = require("../schemas/SequelizeModels");
+const http_status_codes = require("http-status-codes");
+const slugify = require("slugify");
+const sequelize = require("sequelize");
+const app_error = require("../utils/app-error");
+const SequelizeModels = require("../schemas/SequelizeModels");
 const toRecord = (row) => ({
     id: row.id,
     service_code: row.service_code,
@@ -19,7 +16,7 @@ const toRecord = (row) => ({
     updated_at: row.updated_at.toISOString(),
 });
 const listMedicalServices = async (limit, offset) => {
-    const { rows, count } = await SequelizeModels_1.MedicalServiceModel.findAndCountAll({
+    const { rows, count } = await SequelizeModels.MedicalServiceModel.findAndCountAll({
         where: { is_active: true, is_deleted: false },
         order: [["created_at", "DESC"]],
         limit,
@@ -29,7 +26,7 @@ const listMedicalServices = async (limit, offset) => {
 };
 exports.listMedicalServices = listMedicalServices;
 const listMedicalServicesAdmin = async () => {
-    const rows = await SequelizeModels_1.MedicalServiceModel.findAll({
+    const rows = await SequelizeModels.MedicalServiceModel.findAll({
         where: { is_deleted: false },
         order: [["created_at", "DESC"]],
     });
@@ -37,25 +34,25 @@ const listMedicalServicesAdmin = async () => {
 };
 exports.listMedicalServicesAdmin = listMedicalServicesAdmin;
 const findMedicalServiceById = async (serviceId) => {
-    const row = await SequelizeModels_1.MedicalServiceModel.findOne({
+    const row = await SequelizeModels.MedicalServiceModel.findOne({
         where: { id: serviceId, is_deleted: false },
     });
     return row ? toRecord(row) : null;
 };
 exports.findMedicalServiceById = findMedicalServiceById;
 const isMedicalServiceSlugTaken = async (slug, exceptId) => {
-    const total = await SequelizeModels_1.MedicalServiceModel.count({
+    const total = await SequelizeModels.MedicalServiceModel.count({
         where: {
             slug,
             is_deleted: false,
-            ...(exceptId ? { id: { [sequelize_1.Op.ne]: exceptId } } : {}),
+            ...(exceptId ? { id: { [sequelize.Op.ne]: exceptId } } : {}),
         },
     });
     return total > 0;
 };
 exports.isMedicalServiceSlugTaken = isMedicalServiceSlugTaken;
 const createMedicalService = async (input) => {
-    const row = await SequelizeModels_1.MedicalServiceModel.create({
+    const row = await SequelizeModels.MedicalServiceModel.create({
         service_code: input.serviceCode,
         name: input.name,
         slug: input.slug,
@@ -68,9 +65,9 @@ const createMedicalService = async (input) => {
 };
 exports.createMedicalService = createMedicalService;
 const updateMedicalService = async (serviceId, input) => {
-    const row = await SequelizeModels_1.MedicalServiceModel.findOne({ where: { id: serviceId, is_deleted: false } });
+    const row = await SequelizeModels.MedicalServiceModel.findOne({ where: { id: serviceId, is_deleted: false } });
     if (!row) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy dịch vụ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy dịch vụ");
     }
     await row.update({
         service_code: input.serviceCode,
@@ -86,7 +83,7 @@ const updateMedicalService = async (serviceId, input) => {
 };
 exports.updateMedicalService = updateMedicalService;
 const deleteMedicalService = async (serviceId) => {
-    await SequelizeModels_1.MedicalServiceModel.update({
+    await SequelizeModels.MedicalServiceModel.update({
         is_deleted: true,
         is_active: false,
         updated_at: new Date(),
@@ -98,14 +95,14 @@ exports.getServices = getServices;
 const getServicesAdmin = () => exports.listMedicalServicesAdmin();
 exports.getServicesAdmin = getServicesAdmin;
 const createService = async (payload) => {
-    const normalizedSlug = slugify_1.default(payload.slug ?? payload.name, {
+    const normalizedSlug = slugify(payload.slug ?? payload.name, {
         lower: true,
         trim: true,
         strict: true,
     });
     const slugTaken = await exports.isMedicalServiceSlugTaken(normalizedSlug);
     if (slugTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Slug dịch vụ đã tồn tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Slug dịch vụ đã tồn tại");
     }
     return exports.createMedicalService({
         ...payload,
@@ -116,16 +113,16 @@ exports.createService = createService;
 const updateService = async (serviceId, payload) => {
     const existing = await exports.findMedicalServiceById(serviceId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy dịch vụ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy dịch vụ");
     }
-    const normalizedSlug = slugify_1.default(payload.slug ?? payload.name, {
+    const normalizedSlug = slugify(payload.slug ?? payload.name, {
         lower: true,
         trim: true,
         strict: true,
     });
     const slugTaken = await exports.isMedicalServiceSlugTaken(normalizedSlug, serviceId);
     if (slugTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Slug dịch vụ đã tồn tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Slug dịch vụ đã tồn tại");
     }
     return exports.updateMedicalService(serviceId, {
         ...payload,
@@ -136,7 +133,7 @@ exports.updateService = updateService;
 const deleteService = async (serviceId) => {
     const existing = await exports.findMedicalServiceById(serviceId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy dịch vụ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy dịch vụ");
     }
     await exports.deleteMedicalService(serviceId);
 };

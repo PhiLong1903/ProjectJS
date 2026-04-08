@@ -24,6 +24,4 @@ const handleControllerError = (res, error, scope = "controller") => {
   return res.status(statusCode).json({ error: message });
 };
 
-module.exports = {
-  handleControllerError,
-};
+exports.handleControllerError = handleControllerError;

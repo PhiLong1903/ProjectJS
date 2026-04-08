@@ -8,6 +8,4 @@ const sendPasswordResetEmail = async (input) => {
   );
 };
 
-module.exports = {
-  sendPasswordResetEmail,
-};
+exports.sendPasswordResetEmail = sendPasswordResetEmail;

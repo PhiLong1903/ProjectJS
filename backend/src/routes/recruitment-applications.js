@@ -67,7 +67,5 @@ recruitmentAdminRoutes.patch(
 );
 recruitmentAdminRoutes.get("/:applicationId/cv", downloadRecruitmentApplicationCvController);
 
-module.exports = {
-  recruitmentRoutes,
-  recruitmentAdminRoutes,
-};
+exports.recruitmentRoutes = recruitmentRoutes;
+exports.recruitmentAdminRoutes = recruitmentAdminRoutes;

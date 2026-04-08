@@ -1,11 +1,8 @@
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-const http_status_codes_1 = require("http-status-codes");
-const slugify_1 = __importDefault(require("slugify"));
-const sequelize_1 = require("sequelize");
-const app_error_1 = require("../utils/app-error");
-const SequelizeModels_1 = require("../schemas/SequelizeModels");
+const http_status_codes = require("http-status-codes");
+const slugify = require("slugify");
+const sequelize = require("sequelize");
+const app_error = require("../utils/app-error");
+const SequelizeModels = require("../schemas/SequelizeModels");
 const toRecord = (row) => ({
     id: row.id,
     title: row.title,
@@ -19,7 +16,7 @@ const toRecord = (row) => ({
     updated_at: row.updated_at.toISOString(),
 });
 const listPublishedNews = async (limit, offset) => {
-    const { rows, count } = await SequelizeModels_1.NewsArticleModel.findAndCountAll({
+    const { rows, count } = await SequelizeModels.NewsArticleModel.findAndCountAll({
         where: { is_published: true, is_deleted: false },
         order: [
             ["published_at", "DESC"],
@@ -35,7 +32,7 @@ const listPublishedNews = async (limit, offset) => {
 };
 exports.listPublishedNews = listPublishedNews;
 const listNewsAdmin = async () => {
-    const rows = await SequelizeModels_1.NewsArticleModel.findAll({
+    const rows = await SequelizeModels.NewsArticleModel.findAll({
         where: { is_deleted: false },
         order: [["created_at", "DESC"]],
     });
@@ -43,25 +40,25 @@ const listNewsAdmin = async () => {
 };
 exports.listNewsAdmin = listNewsAdmin;
 const findNewsBySlug = async (slug) => {
-    const row = await SequelizeModels_1.NewsArticleModel.findOne({
+    const row = await SequelizeModels.NewsArticleModel.findOne({
         where: { slug, is_deleted: false },
     });
     return row ? toRecord(row) : null;
 };
 exports.findNewsBySlug = findNewsBySlug;
 const findNewsById = async (newsId) => {
-    const row = await SequelizeModels_1.NewsArticleModel.findOne({
+    const row = await SequelizeModels.NewsArticleModel.findOne({
         where: { id: newsId, is_deleted: false },
     });
     return row ? toRecord(row) : null;
 };
 exports.findNewsById = findNewsById;
 const isNewsSlugTaken = async (slug, exceptId) => {
-    const total = await SequelizeModels_1.NewsArticleModel.count({
+    const total = await SequelizeModels.NewsArticleModel.count({
         where: {
             slug,
             is_deleted: false,
-            ...(exceptId ? { id: { [sequelize_1.Op.ne]: exceptId } } : {}),
+            ...(exceptId ? { id: { [sequelize.Op.ne]: exceptId } } : {}),
         },
     });
     return total > 0;
@@ -69,7 +66,7 @@ const isNewsSlugTaken = async (slug, exceptId) => {
 exports.isNewsSlugTaken = isNewsSlugTaken;
 const createNews = async (input) => {
     const isPublished = input.isPublished ?? false;
-    const row = await SequelizeModels_1.NewsArticleModel.create({
+    const row = await SequelizeModels.NewsArticleModel.create({
         title: input.title,
         slug: input.slug,
         summary: input.summary ?? null,
@@ -82,9 +79,9 @@ const createNews = async (input) => {
 };
 exports.createNews = createNews;
 const updateNews = async (newsId, input) => {
-    const row = await SequelizeModels_1.NewsArticleModel.findOne({ where: { id: newsId, is_deleted: false } });
+    const row = await SequelizeModels.NewsArticleModel.findOne({ where: { id: newsId, is_deleted: false } });
     if (!row) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bài viết");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bài viết");
     }
     const nextPublished = input.isPublished ?? false;
     const publishedAt = nextPublished
@@ -104,7 +101,7 @@ const updateNews = async (newsId, input) => {
 };
 exports.updateNews = updateNews;
 const deleteNews = async (newsId) => {
-    await SequelizeModels_1.NewsArticleModel.update({
+    await SequelizeModels.NewsArticleModel.update({
         is_deleted: true,
         is_published: false,
         updated_at: new Date(),
@@ -116,7 +113,7 @@ exports.getPublicNews = getPublicNews;
 const getNewsDetail = async (slug) => {
     const news = await exports.findNewsBySlug(slug);
     if (!news || !news.is_published) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bài viết");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bài viết");
     }
     return news;
 };
@@ -124,14 +121,14 @@ exports.getNewsDetail = getNewsDetail;
 const getAdminNews = () => exports.listNewsAdmin();
 exports.getAdminNews = getAdminNews;
 const createNewsService = async (payload) => {
-    const normalizedSlug = slugify_1.default(payload.slug ?? payload.title, {
+    const normalizedSlug = slugify(payload.slug ?? payload.title, {
         lower: true,
         trim: true,
         strict: true,
     });
     const slugTaken = await exports.isNewsSlugTaken(normalizedSlug);
     if (slugTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Slug bài viết đã tồn tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Slug bài viết đã tồn tại");
     }
     return exports.createNews({
         ...payload,
@@ -142,16 +139,16 @@ exports.createNewsService = createNewsService;
 const updateNewsService = async (newsId, payload) => {
     const existing = await exports.findNewsById(newsId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bài viết");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bài viết");
     }
-    const normalizedSlug = slugify_1.default(payload.slug ?? payload.title, {
+    const normalizedSlug = slugify(payload.slug ?? payload.title, {
         lower: true,
         trim: true,
         strict: true,
     });
     const slugTaken = await exports.isNewsSlugTaken(normalizedSlug, newsId);
     if (slugTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Slug bài viết đã tồn tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Slug bài viết đã tồn tại");
     }
     return exports.updateNews(newsId, {
         ...payload,
@@ -162,7 +159,7 @@ exports.updateNewsService = updateNewsService;
 const deleteNewsService = async (newsId) => {
     const existing = await exports.findNewsById(newsId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bài viết");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bài viết");
     }
     await exports.deleteNews(newsId);
 };

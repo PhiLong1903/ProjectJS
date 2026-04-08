@@ -1,6 +1,6 @@
-const http_status_codes_1 = require("http-status-codes");
-const app_error_1 = require("../utils/app-error");
-const SequelizeModels_1 = require("../schemas/SequelizeModels");
+const http_status_codes = require("http-status-codes");
+const app_error = require("../utils/app-error");
+const SequelizeModels = require("../schemas/SequelizeModels");
 const toRecord = (row) => ({
     id: row.id,
     patient_id: row.patient_id,
@@ -17,22 +17,22 @@ const toRecord = (row) => ({
 });
 const includePatient = [
     {
-        model: SequelizeModels_1.PatientModel,
+        model: SequelizeModels.PatientModel,
         as: "patient",
         required: true,
-        include: [{ model: SequelizeModels_1.UserModel, as: "user", required: true }],
+        include: [{ model: SequelizeModels.UserModel, as: "user", required: true }],
     },
 ];
 const lookupLabResults = async (patientCode, phoneNumber) => {
-    const rows = await SequelizeModels_1.LabResultModel.findAll({
+    const rows = await SequelizeModels.LabResultModel.findAll({
         where: { is_deleted: false },
         include: [
             {
-                model: SequelizeModels_1.PatientModel,
+                model: SequelizeModels.PatientModel,
                 as: "patient",
                 required: true,
                 where: { patient_code: patientCode, phone_number: phoneNumber },
-                include: [{ model: SequelizeModels_1.UserModel, as: "user", required: true }],
+                include: [{ model: SequelizeModels.UserModel, as: "user", required: true }],
             },
         ],
         order: [["created_at", "DESC"]],
@@ -42,7 +42,7 @@ const lookupLabResults = async (patientCode, phoneNumber) => {
 };
 exports.lookupLabResults = lookupLabResults;
 const listLabResultsAdmin = async (limit, offset) => {
-    const { rows, count } = await SequelizeModels_1.LabResultModel.findAndCountAll({
+    const { rows, count } = await SequelizeModels.LabResultModel.findAndCountAll({
         where: { is_deleted: false },
         include: includePatient,
         order: [["created_at", "DESC"]],
@@ -56,7 +56,7 @@ const listLabResultsAdmin = async (limit, offset) => {
 };
 exports.listLabResultsAdmin = listLabResultsAdmin;
 const findPatientByCode = async (patientCode) => {
-    const row = await SequelizeModels_1.PatientModel.findOne({
+    const row = await SequelizeModels.PatientModel.findOne({
         attributes: ["id", "patient_code"],
         where: { patient_code: patientCode },
     });
@@ -64,7 +64,7 @@ const findPatientByCode = async (patientCode) => {
 };
 exports.findPatientByCode = findPatientByCode;
 const findLabResultById = async (labResultId) => {
-    const row = await SequelizeModels_1.LabResultModel.findOne({
+    const row = await SequelizeModels.LabResultModel.findOne({
         where: { id: labResultId, is_deleted: false },
         include: includePatient,
     });
@@ -74,7 +74,7 @@ const findLabResultById = async (labResultId) => {
 };
 exports.findLabResultById = findLabResultById;
 const createLabResult = async (input) => {
-    const row = await SequelizeModels_1.LabResultModel.create({
+    const row = await SequelizeModels.LabResultModel.create({
         patient_id: input.patientId,
         test_code: input.testCode,
         test_name: input.testName,
@@ -84,7 +84,7 @@ const createLabResult = async (input) => {
         status: input.status,
         performed_at: input.performedAt ? new Date(input.performedAt) : null,
     });
-    const detail = await SequelizeModels_1.LabResultModel.findOne({
+    const detail = await SequelizeModels.LabResultModel.findOne({
         where: { id: row.id },
         include: includePatient,
     });
@@ -92,11 +92,11 @@ const createLabResult = async (input) => {
 };
 exports.createLabResult = createLabResult;
 const updateLabResult = async (labResultId, input) => {
-    const row = await SequelizeModels_1.LabResultModel.findOne({
+    const row = await SequelizeModels.LabResultModel.findOne({
         where: { id: labResultId, is_deleted: false },
     });
     if (!row) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy kết quả cận lâm sàng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy kết quả cận lâm sàng");
     }
     await row.update({
         test_code: input.testCode,
@@ -108,7 +108,7 @@ const updateLabResult = async (labResultId, input) => {
         performed_at: input.performedAt ? new Date(input.performedAt) : null,
         updated_at: new Date(),
     });
-    const detail = await SequelizeModels_1.LabResultModel.findOne({
+    const detail = await SequelizeModels.LabResultModel.findOne({
         where: { id: row.id },
         include: includePatient,
     });
@@ -116,7 +116,7 @@ const updateLabResult = async (labResultId, input) => {
 };
 exports.updateLabResult = updateLabResult;
 const deleteLabResult = async (labResultId) => {
-    await SequelizeModels_1.LabResultModel.update({
+    await SequelizeModels.LabResultModel.update({
         is_deleted: true,
         updated_at: new Date(),
     }, { where: { id: labResultId } });
@@ -125,7 +125,7 @@ exports.deleteLabResult = deleteLabResult;
 const lookupLabResultService = async (payload) => {
     const results = await exports.lookupLabResults(payload.patientCode, payload.phoneNumber);
     if (results.length === 0) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy kết quả cận lâm sàng. Vui lòng kiểm tra lại mã bệnh nhân và số điện thoại.");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy kết quả cận lâm sàng. Vui lòng kiểm tra lại mã bệnh nhân và số điện thoại.");
     }
     return results;
 };
@@ -135,7 +135,7 @@ exports.getLabResultsAdmin = getLabResultsAdmin;
 const getLabResultDetailAdmin = async (labResultId) => {
     const detail = await exports.findLabResultById(labResultId);
     if (!detail) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay ket qua can lam sang");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay ket qua can lam sang");
     }
     return detail;
 };
@@ -143,7 +143,7 @@ exports.getLabResultDetailAdmin = getLabResultDetailAdmin;
 const createLabResultService = async (payload) => {
     const patient = await exports.findPatientByCode(payload.patientCode);
     if (!patient) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bệnh nhân theo mã cung cấp");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bệnh nhân theo mã cung cấp");
     }
     return exports.createLabResult({
         patientId: patient.id,
@@ -160,7 +160,7 @@ exports.createLabResultService = createLabResultService;
 const updateLabResultService = async (labResultId, payload) => {
     const existing = await exports.findLabResultById(labResultId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy kết quả cận lâm sàng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy kết quả cận lâm sàng");
     }
     return exports.updateLabResult(labResultId, payload);
 };
@@ -168,7 +168,7 @@ exports.updateLabResultService = updateLabResultService;
 const deleteLabResultService = async (labResultId) => {
     const existing = await exports.findLabResultById(labResultId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy kết quả cận lâm sàng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy kết quả cận lâm sàng");
     }
     await exports.deleteLabResult(labResultId);
 };

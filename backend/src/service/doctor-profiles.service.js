@@ -1,7 +1,7 @@
-const http_status_codes_1 = require("http-status-codes");
-const appointment_state_1 = require("../utils/appointment-state");
-const app_error_1 = require("../utils/app-error");
-const db_1 = require("../config/db");
+const http_status_codes = require("http-status-codes");
+const appointment_state = require("../utils/appointment-state");
+const app_error = require("../utils/app-error");
+const db = require("../config/db");
 const appointmentSelect = `
   SELECT
     a.id,
@@ -33,7 +33,7 @@ const appointmentSelect = `
   INNER JOIN doctor_slots ds ON ds.id = a.slot_id
 `;
 const findDoctorByUserId = async (userId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT
         d.id,
         d.user_id,
@@ -85,7 +85,7 @@ const updateDoctorProfileByUserId = async (userId, payload) => {
         columns.push(`avatar_url = $${params.length}`);
     }
     if (columns.length > 0) {
-        await db_1.query(`
+        await db.query(`
         UPDATE doctors
         SET ${columns.join(", ")}, updated_at = NOW()
         WHERE id = $1
@@ -111,13 +111,13 @@ const listDoctorAppointments = async (doctorId, input) => {
     }
     const whereClause = whereParts.join(" AND ");
     const [rowsResult, countResult] = await Promise.all([
-        db_1.query(`
+        db.query(`
         ${appointmentSelect}
         WHERE ${whereClause}
         ORDER BY ds.slot_date ASC, ds.start_time ASC
         LIMIT $${params.length + 1} OFFSET $${params.length + 2}
       `, [...params, input.limit, input.offset]),
-        db_1.query(`
+        db.query(`
         SELECT COUNT(*)::text AS total
         FROM appointments a
         INNER JOIN doctor_slots ds ON ds.id = a.slot_id
@@ -131,7 +131,7 @@ const listDoctorAppointments = async (doctorId, input) => {
 };
 exports.listDoctorAppointments = listDoctorAppointments;
 const findDoctorAppointmentById = async (doctorId, bookingId, client) => {
-    const executor = client ?? db_1.db;
+    const executor = client ?? db.db;
     const result = await executor.query(`
       ${appointmentSelect}
       WHERE a.doctor_id = $1
@@ -144,7 +144,7 @@ const findDoctorAppointmentById = async (doctorId, bookingId, client) => {
 };
 exports.findDoctorAppointmentById = findDoctorAppointmentById;
 const updateDoctorAppointmentStatus = async (doctorId, bookingId, payload) => {
-    const client = await db_1.db.connect();
+    const client = await db.db.connect();
     try {
         await client.query("BEGIN");
         const booking = await exports.findDoctorAppointmentById(doctorId, bookingId, client);
@@ -199,7 +199,7 @@ const upsertPrescriptionByDoctor = async (doctorId, bookingId, payload) => {
     if (!["CONFIRMED", "COMPLETED"].includes(booking.status)) {
         throw new Error("Chỉ có thể cập nhật đơn thuốc khi lịch khám đã xác nhận hoặc hoàn tất");
     }
-    const result = await db_1.query(`
+    const result = await db.query(`
       INSERT INTO prescriptions (appointment_id, doctor_id, patient_id, diagnosis, medications, advice)
       VALUES ($1, $2, $3, $4, $5::jsonb, $6)
       ON CONFLICT (appointment_id)
@@ -225,7 +225,7 @@ const upsertPrescriptionByDoctor = async (doctorId, bookingId, payload) => {
         JSON.stringify(payload.medications),
         payload.advice ?? null,
     ]);
-    await db_1.query(`
+    await db.query(`
       INSERT INTO notifications (user_id, title, message, type)
       SELECT p.user_id,
         'Đơn thuốc mới',
@@ -238,7 +238,7 @@ const upsertPrescriptionByDoctor = async (doctorId, bookingId, payload) => {
 };
 exports.upsertPrescriptionByDoctor = upsertPrescriptionByDoctor;
 const getPatientRecordsForDoctor = async (doctorId, patientCode) => {
-    const relationCheck = await db_1.query(`
+    const relationCheck = await db.query(`
       SELECT COUNT(*)::text AS total
       FROM appointments a
       INNER JOIN patients p ON p.id = a.patient_id
@@ -248,7 +248,7 @@ const getPatientRecordsForDoctor = async (doctorId, patientCode) => {
     if (Number(relationCheck.rows[0]?.total ?? 0) === 0) {
         return null;
     }
-    const patientRes = await db_1.query(`
+    const patientRes = await db.query(`
       SELECT
         p.id,
         p.patient_code,
@@ -268,13 +268,13 @@ const getPatientRecordsForDoctor = async (doctorId, patientCode) => {
         return null;
     }
     const [appointmentsRes, labRes, prescriptionsRes] = await Promise.all([
-        db_1.query(`
+        db.query(`
         ${appointmentSelect}
         WHERE a.patient_id = $1
           AND ds.is_deleted = FALSE
         ORDER BY ds.slot_date DESC, ds.start_time DESC
       `, [patient.id]),
-        db_1.query(`
+        db.query(`
         SELECT
           id,
           test_code,
@@ -286,7 +286,7 @@ const getPatientRecordsForDoctor = async (doctorId, patientCode) => {
         WHERE patient_id = $1
         ORDER BY created_at DESC
       `, [patient.id]),
-        db_1.query(`
+        db.query(`
         SELECT
           id,
           appointment_id,
@@ -316,7 +316,7 @@ const getPatientRecordsForDoctor = async (doctorId, patientCode) => {
 };
 exports.getPatientRecordsForDoctor = getPatientRecordsForDoctor;
 const createDoctorSlotByDoctorId = async (doctorId, payload) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       INSERT INTO doctor_slots (doctor_id, slot_date, start_time, end_time)
       VALUES ($1, $2::date, $3::time, $4::time)
       RETURNING id, slot_date::text, start_time::text, end_time::text, is_available
@@ -325,7 +325,7 @@ const createDoctorSlotByDoctorId = async (doctorId, payload) => {
 };
 exports.createDoctorSlotByDoctorId = createDoctorSlotByDoctorId;
 const deleteDoctorSlotByDoctorId = async (doctorId, slotId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       UPDATE doctor_slots
       SET is_deleted = TRUE,
           is_available = FALSE,
@@ -340,7 +340,7 @@ const deleteDoctorSlotByDoctorId = async (doctorId, slotId) => {
 };
 exports.deleteDoctorSlotByDoctorId = deleteDoctorSlotByDoctorId;
 const listDoctorNotifications = async (userId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT id, title, message, type, is_read, created_at::text
       FROM notifications
       WHERE user_id = $1
@@ -351,7 +351,7 @@ const listDoctorNotifications = async (userId) => {
 };
 exports.listDoctorNotifications = listDoctorNotifications;
 const markDoctorNotificationRead = async (userId, notificationId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       UPDATE notifications
       SET is_read = TRUE
       WHERE id = $1
@@ -364,7 +364,7 @@ exports.markDoctorNotificationRead = markDoctorNotificationRead;
 const getDoctorOrThrow = async (userId) => {
     const doctor = await exports.findDoctorByUserId(userId);
     if (!doctor) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy hồ sơ bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy hồ sơ bác sĩ");
     }
     return doctor;
 };
@@ -373,7 +373,7 @@ exports.getMyDoctorProfile = getMyDoctorProfile;
 const updateMyDoctorProfile = async (userId, payload) => {
     const profile = await exports.updateDoctorProfileByUserId(userId, payload);
     if (!profile) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy hồ sơ bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy hồ sơ bác sĩ");
     }
     return profile;
 };
@@ -393,19 +393,19 @@ const updateMyAppointmentStatus = async (userId, bookingId, payload) => {
     const doctor = await getDoctorOrThrow(userId);
     const booking = await exports.findDoctorAppointmentById(doctor.id, bookingId);
     if (!booking) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy lịch khám thuộc bác sĩ hiện tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy lịch khám thuộc bác sĩ hiện tại");
     }
     const currentStatus = booking.status;
     const nextStatus = payload.status;
-    if (appointment_state_1.isTerminalAppointmentStatus(currentStatus)) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Lịch khám đã kết thúc, không thể cập nhật thêm");
+    if (appointment_state.isTerminalAppointmentStatus(currentStatus)) {
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Lịch khám đã kết thúc, không thể cập nhật thêm");
     }
-    if (!appointment_state_1.canTransitionAppointment(currentStatus, nextStatus)) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, `Không thể chuyển trạng thái từ ${currentStatus} sang ${nextStatus}`);
+    if (!appointment_state.canTransitionAppointment(currentStatus, nextStatus)) {
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, `Không thể chuyển trạng thái từ ${currentStatus} sang ${nextStatus}`);
     }
     const updated = await exports.updateDoctorAppointmentStatus(doctor.id, bookingId, payload);
     if (!updated) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy lịch khám để cập nhật");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy lịch khám để cập nhật");
     }
     return updated;
 };
@@ -417,7 +417,7 @@ const upsertMyPrescription = async (userId, bookingId, payload) => {
     }
     catch (error) {
         const message = error instanceof Error ? error.message : "Không thể cập nhật đơn thuốc";
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, message);
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, message);
     }
 };
 exports.upsertMyPrescription = upsertMyPrescription;
@@ -425,14 +425,14 @@ const getPatientRecordsByCode = async (userId, patientCode) => {
     const doctor = await getDoctorOrThrow(userId);
     const records = await exports.getPatientRecordsForDoctor(doctor.id, patientCode);
     if (!records) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy hồ sơ bệnh nhân hoặc bác sĩ chưa có lịch khám với bệnh nhân này");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy hồ sơ bệnh nhân hoặc bác sĩ chưa có lịch khám với bệnh nhân này");
     }
     return records;
 };
 exports.getPatientRecordsByCode = getPatientRecordsByCode;
 const createMyDoctorSlot = async (userId, payload) => {
     if (payload.startTime >= payload.endTime) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
     }
     const doctor = await getDoctorOrThrow(userId);
     try {
@@ -440,7 +440,7 @@ const createMyDoctorSlot = async (userId, payload) => {
     }
     catch (error) {
         const message = error instanceof Error ? error.message : "Không thể tạo lịch làm việc";
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, message);
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, message);
     }
 };
 exports.createMyDoctorSlot = createMyDoctorSlot;
@@ -448,7 +448,7 @@ const deleteMyDoctorSlot = async (userId, slotId) => {
     const doctor = await getDoctorOrThrow(userId);
     const deleted = await exports.deleteDoctorSlotByDoctorId(doctor.id, slotId);
     if (!deleted) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Không thể xóa khung giờ (có thể đã được đặt hoặc không thuộc bác sĩ hiện tại)");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Không thể xóa khung giờ (có thể đã được đặt hoặc không thuộc bác sĩ hiện tại)");
     }
 };
 exports.deleteMyDoctorSlot = deleteMyDoctorSlot;
@@ -457,7 +457,7 @@ exports.getMyDoctorNotifications = getMyDoctorNotifications;
 const readMyDoctorNotification = async (userId, notificationId) => {
     const updated = await exports.markDoctorNotificationRead(userId, notificationId);
     if (!updated) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy thông báo");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy thông báo");
     }
 };
 exports.readMyDoctorNotification = readMyDoctorNotification;

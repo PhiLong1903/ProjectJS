@@ -6,6 +6,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { SectionTitle } from "../components/sections/SectionTitle";
+import { AdminDoctorAnnouncementCard } from "../components/sections/AdminDoctorAnnouncementCard";
 import { adminApi, adminPortalApi } from "../lib/api";
 import { useAuth } from "../lib/auth-context";
 const USERS_PAGE_SIZE = 10;
@@ -321,6 +322,13 @@ export const AdminDashboardPage = () => {
     } catch {
       setMessage("Không thể xử lý notification queue.");
     }
+  };
+  const handleDoctorAnnouncementSuccess = async (result) => {
+    setMessage(`Da gui thong bao cho ${result.total_recipients} bac si.`);
+    await loadAdminData();
+  };
+  const handleDoctorAnnouncementError = () => {
+    setMessage("Khong the gui thong bao cho bac si.");
   };
   const closeDetailModal = () => {
     setDetailType(null);
@@ -677,9 +685,9 @@ export const AdminDashboardPage = () => {
                   }),
                 ],
               }),
-              _jsxs("div", {
-                className: "mt-3 space-y-2",
-                children: [
+	              _jsxs("div", {
+	                className: "mt-3 space-y-2",
+	                children: [
                   notificationJobs.length === 0
                     ? _jsx("p", {
                         className: "text-sm text-slate-600",
@@ -718,11 +726,17 @@ export const AdminDashboardPage = () => {
                         },
                         job.id,
                       ),
-                    ),
-                ],
-              }),
-            ],
-          }),
+	                    ),
+	                ],
+	              }),
+	              _jsx(AdminDoctorAnnouncementCard, {
+	                doctors: doctors,
+	                onSuccess: (result) =>
+	                  void handleDoctorAnnouncementSuccess(result),
+	                onError: handleDoctorAnnouncementError,
+	              }),
+	            ],
+	          }),
         ],
       }),
       _jsxs("article", {

@@ -1,13 +1,13 @@
-const crypto_1 = require("crypto");
-const http_status_codes_1 = require("http-status-codes");
-const env_1 = require("../config/env");
-const audit_log_1 = require("../utils/audit-log");
-const app_error_1 = require("../utils/app-error");
-const password_1 = require("../utils/password");
-const password_reset_mailer_1 = require("../utils/password-reset-mailer");
-const token_1 = require("../utils/token");
-const sequelize_1 = require("../config/sequelize");
-const SequelizeModels_1 = require("../schemas/SequelizeModels");
+const crypto = require("crypto");
+const http_status_codes = require("http-status-codes");
+const env = require("../config/env");
+const audit_log = require("../utils/audit-log");
+const app_error = require("../utils/app-error");
+const password = require("../utils/password");
+const password_reset_mailer = require("../utils/password-reset-mailer");
+const tokenUtils = require("../utils/token");
+const sequelize = require("../config/sequelize");
+const SequelizeModels = require("../schemas/SequelizeModels");
 const mapUserRecord = (user) => {
     if (!user) {
         return null;
@@ -30,32 +30,32 @@ const mapUserRecord = (user) => {
     };
 };
 const findUserByEmail = async (email) => {
-    const row = await SequelizeModels_1.UserModel.findOne({
+    const row = await SequelizeModels.UserModel.findOne({
         where: { email, is_deleted: false },
         include: [
             {
-                model: SequelizeModels_1.UserRoleModel,
+                model: SequelizeModels.UserRoleModel,
                 as: "user_roles",
                 required: false,
-                include: [{ model: SequelizeModels_1.RoleModel, as: "role", required: false }],
+                include: [{ model: SequelizeModels.RoleModel, as: "role", required: false }],
             },
-            { model: SequelizeModels_1.PatientModel, as: "patient", required: false },
+            { model: SequelizeModels.PatientModel, as: "patient", required: false },
         ],
     });
     return mapUserRecord(row);
 };
 exports.findUserByEmail = findUserByEmail;
 const findUserById = async (userId) => {
-    const row = await SequelizeModels_1.UserModel.findOne({
+    const row = await SequelizeModels.UserModel.findOne({
         where: { id: userId, is_deleted: false },
         include: [
             {
-                model: SequelizeModels_1.UserRoleModel,
+                model: SequelizeModels.UserRoleModel,
                 as: "user_roles",
                 required: false,
-                include: [{ model: SequelizeModels_1.RoleModel, as: "role", required: false }],
+                include: [{ model: SequelizeModels.RoleModel, as: "role", required: false }],
             },
-            { model: SequelizeModels_1.PatientModel, as: "patient", required: false },
+            { model: SequelizeModels.PatientModel, as: "patient", required: false },
         ],
     });
     return mapUserRecord(row);
@@ -68,15 +68,15 @@ const findPatientUserByIdentifier = async (identifier) => {
     }
     const include = [
         {
-            model: SequelizeModels_1.UserRoleModel,
+            model: SequelizeModels.UserRoleModel,
             as: "user_roles",
             required: false,
-            include: [{ model: SequelizeModels_1.RoleModel, as: "role", required: false }],
+            include: [{ model: SequelizeModels.RoleModel, as: "role", required: false }],
         },
-        { model: SequelizeModels_1.PatientModel, as: "patient", required: false },
+        { model: SequelizeModels.PatientModel, as: "patient", required: false },
     ];
     if (normalized.includes("@")) {
-        const row = await SequelizeModels_1.UserModel.findOne({
+        const row = await SequelizeModels.UserModel.findOne({
             where: {
                 email: normalizeEmail(normalized),
                 is_deleted: false,
@@ -87,12 +87,12 @@ const findPatientUserByIdentifier = async (identifier) => {
         return user?.roles.includes("PATIENT") ? user : null;
     }
     const patientCode = normalized.toUpperCase();
-    const row = await SequelizeModels_1.UserModel.findOne({
+    const row = await SequelizeModels.UserModel.findOne({
         where: { is_deleted: false },
         include: [
             include[0],
             {
-                model: SequelizeModels_1.PatientModel,
+                model: SequelizeModels.PatientModel,
                 as: "patient",
                 required: true,
                 where: { patient_code: patientCode },
@@ -103,26 +103,26 @@ const findPatientUserByIdentifier = async (identifier) => {
     return user?.roles.includes("PATIENT") ? user : null;
 };
 const findPatientUserByResetTokenHash = async (tokenHash) => {
-    const row = await SequelizeModels_1.UserModel.findOne({
+    const row = await SequelizeModels.UserModel.findOne({
         where: {
             password_reset_token: tokenHash,
             is_deleted: false,
         },
         include: [
             {
-                model: SequelizeModels_1.UserRoleModel,
+                model: SequelizeModels.UserRoleModel,
                 as: "user_roles",
                 required: false,
-                include: [{ model: SequelizeModels_1.RoleModel, as: "role", required: false }],
+                include: [{ model: SequelizeModels.RoleModel, as: "role", required: false }],
             },
-            { model: SequelizeModels_1.PatientModel, as: "patient", required: false },
+            { model: SequelizeModels.PatientModel, as: "patient", required: false },
         ],
     });
     const user = mapUserRecord(row);
     return user?.roles.includes("PATIENT") ? user : null;
 };
 const updatePasswordResetToken = async (userId, tokenHash, expiresAt) => {
-    await SequelizeModels_1.UserModel.update({
+    await SequelizeModels.UserModel.update({
         password_reset_token: tokenHash,
         password_reset_expires: expiresAt,
     }, {
@@ -130,7 +130,7 @@ const updatePasswordResetToken = async (userId, tokenHash, expiresAt) => {
     });
 };
 const clearPasswordResetToken = async (userId) => {
-    await SequelizeModels_1.UserModel.update({
+    await SequelizeModels.UserModel.update({
         password_reset_token: null,
         password_reset_expires: null,
     }, {
@@ -138,7 +138,7 @@ const clearPasswordResetToken = async (userId) => {
     });
 };
 const updatePasswordAndClearResetToken = async (userId, passwordHash) => {
-    await SequelizeModels_1.UserModel.update({
+    await SequelizeModels.UserModel.update({
         password_hash: passwordHash,
         password_reset_token: null,
         password_reset_expires: null,
@@ -147,45 +147,45 @@ const updatePasswordAndClearResetToken = async (userId, passwordHash) => {
     });
 };
 const revokeAllSessionsByUserId = async (userId) => {
-    await SequelizeModels_1.AuthSessionModel.update({
+    await SequelizeModels.AuthSessionModel.update({
         is_revoked: true,
     }, {
         where: { user_id: userId, is_revoked: false },
     });
 };
 const isPhoneTaken = async (phoneNumber) => {
-    const total = await SequelizeModels_1.PatientModel.count({ where: { phone_number: phoneNumber } });
+    const total = await SequelizeModels.PatientModel.count({ where: { phone_number: phoneNumber } });
     return total > 0;
 };
 exports.isPhoneTaken = isPhoneTaken;
 const isPatientCodeTaken = async (patientCode) => {
-    const total = await SequelizeModels_1.PatientModel.count({ where: { patient_code: patientCode } });
+    const total = await SequelizeModels.PatientModel.count({ where: { patient_code: patientCode } });
     return total > 0;
 };
 exports.isPatientCodeTaken = isPatientCodeTaken;
 const createPatientUser = async (input) => {
-    return sequelize_1.sequelize.transaction(async (transaction) => {
-        const user = await SequelizeModels_1.UserModel.create({
+    return sequelize.sequelize.transaction(async (transaction) => {
+        const user = await SequelizeModels.UserModel.create({
             email: input.email,
             full_name: input.fullName,
             password_hash: input.passwordHash,
         }, { transaction });
-        let patientRole = await SequelizeModels_1.RoleModel.findOne({
+        let patientRole = await SequelizeModels.RoleModel.findOne({
             where: { name: "PATIENT" },
             transaction,
         });
         if (!patientRole) {
-            patientRole = await SequelizeModels_1.RoleModel.create({
+            patientRole = await SequelizeModels.RoleModel.create({
                 name: "PATIENT",
                 description: "Bệnh nhân sử dụng cổng đặt lịch",
             }, { transaction });
         }
-        await SequelizeModels_1.UserRoleModel.findOrCreate({
+        await SequelizeModels.UserRoleModel.findOrCreate({
             where: { user_id: user.id, role_id: patientRole.id },
             defaults: { user_id: user.id, role_id: patientRole.id },
             transaction,
         });
-        const patient = await SequelizeModels_1.PatientModel.create({
+        const patient = await SequelizeModels.PatientModel.create({
             user_id: user.id,
             patient_code: input.patientCode,
             phone_number: input.phoneNumber,
@@ -208,7 +208,7 @@ const createPatientUser = async (input) => {
 };
 exports.createPatientUser = createPatientUser;
 const createAuthSession = async (userId, refreshTokenHash, expiresAt, ipAddress, userAgent) => {
-    await SequelizeModels_1.AuthSessionModel.create({
+    await SequelizeModels.AuthSessionModel.create({
         user_id: userId,
         refresh_token_hash: refreshTokenHash,
         expires_at: expiresAt,
@@ -219,7 +219,7 @@ const createAuthSession = async (userId, refreshTokenHash, expiresAt, ipAddress,
 };
 exports.createAuthSession = createAuthSession;
 const findSessionByTokenHash = async (refreshTokenHash) => {
-    const row = await SequelizeModels_1.AuthSessionModel.findOne({
+    const row = await SequelizeModels.AuthSessionModel.findOne({
         where: { refresh_token_hash: refreshTokenHash },
     });
     return row
@@ -234,15 +234,15 @@ const findSessionByTokenHash = async (refreshTokenHash) => {
 };
 exports.findSessionByTokenHash = findSessionByTokenHash;
 const revokeSessionByTokenHash = async (refreshTokenHash) => {
-    await SequelizeModels_1.AuthSessionModel.update({ is_revoked: true }, { where: { refresh_token_hash: refreshTokenHash } });
+    await SequelizeModels.AuthSessionModel.update({ is_revoked: true }, { where: { refresh_token_hash: refreshTokenHash } });
 };
 exports.revokeSessionByTokenHash = revokeSessionByTokenHash;
 const touchUserLastLogin = async (userId) => {
-    await SequelizeModels_1.UserModel.update({ last_login_at: new Date() }, { where: { id: userId } });
+    await SequelizeModels.UserModel.update({ last_login_at: new Date() }, { where: { id: userId } });
 };
 exports.touchUserLastLogin = touchUserLastLogin;
 const getLoginAttemptByEmail = async (email) => {
-    const row = await SequelizeModels_1.AuthLoginAttemptModel.findByPk(email);
+    const row = await SequelizeModels.AuthLoginAttemptModel.findByPk(email);
     return row
         ? {
             email: row.email,
@@ -253,12 +253,12 @@ const getLoginAttemptByEmail = async (email) => {
 };
 exports.getLoginAttemptByEmail = getLoginAttemptByEmail;
 const clearLoginAttemptByEmail = async (email) => {
-    await SequelizeModels_1.AuthLoginAttemptModel.destroy({ where: { email } });
+    await SequelizeModels.AuthLoginAttemptModel.destroy({ where: { email } });
 };
 exports.clearLoginAttemptByEmail = clearLoginAttemptByEmail;
 const recordFailedLoginAttemptByEmail = async (email, maxFailedAttempts, lockMinutes) => {
-    return sequelize_1.sequelize.transaction(async (transaction) => {
-        const existing = await SequelizeModels_1.AuthLoginAttemptModel.findOne({
+    return sequelize.sequelize.transaction(async (transaction) => {
+        const existing = await SequelizeModels.AuthLoginAttemptModel.findOne({
             where: { email },
             lock: transaction.LOCK.UPDATE,
             transaction,
@@ -267,7 +267,7 @@ const recordFailedLoginAttemptByEmail = async (email, maxFailedAttempts, lockMin
         const failedCount = (existing?.failed_count ?? 0) + 1;
         const lockedUntil = failedCount >= maxFailedAttempts ? new Date(now.getTime() + lockMinutes * 60 * 1000) : null;
         if (!existing) {
-            await SequelizeModels_1.AuthLoginAttemptModel.create({
+            await SequelizeModels.AuthLoginAttemptModel.create({
                 email,
                 failed_count: failedCount,
                 first_failed_at: now,
@@ -301,7 +301,7 @@ const roleTitleMap = {
 };
 const writeAuditLogSafe = async (input) => {
     try {
-        await audit_log_1.writeAuditLog(input);
+        await audit_log.writeAuditLog(input);
     }
     catch (error) {
         console.error("Audit log failed:", error);
@@ -318,14 +318,14 @@ const generatePatientCode = async () => {
     return code;
 };
 const toAuthPayload = (input) => {
-    const token = token_1.signAccessToken({
+    const accessToken = tokenUtils.signAccessToken({
         sub: input.id,
         email: input.email,
         fullName: input.fullName,
         roles: input.roles,
     });
     return {
-        token,
+        token: accessToken,
         user: {
             id: input.id,
             email: input.email,
@@ -337,13 +337,13 @@ const toAuthPayload = (input) => {
 };
 const normalizeEmail = (email) => email.trim().toLowerCase();
 const PASSWORD_RESET_GENERIC_MESSAGE = "Neu tai khoan ton tai, email dat lai mat khau da duoc gui.";
-const createRawPasswordResetToken = () => crypto_1.randomBytes(32).toString("hex");
+const createRawPasswordResetToken = () => crypto.randomBytes(32).toString("hex");
 const getPasswordResetExpiresAt = () => {
-    const ttlMinutes = env_1.env.PASSWORD_RESET_TOKEN_EXPIRES_MINUTES;
+    const ttlMinutes = env.env.PASSWORD_RESET_TOKEN_EXPIRES_MINUTES;
     return new Date(Date.now() + ttlMinutes * 60 * 1000);
 };
 const buildPasswordResetLink = (rawToken) => {
-    const baseUrl = env_1.env.PASSWORD_RESET_URL ?? `${env_1.env.CLIENT_URL ?? "http://localhost:5173"}/reset-password`;
+    const baseUrl = env.env.PASSWORD_RESET_URL ?? `${env.env.CLIENT_URL ?? "http://localhost:5173"}/reset-password`;
     const normalizedBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
     return `${normalizedBase}/${rawToken}`;
 };
@@ -351,14 +351,14 @@ const register = async (payload) => {
     const normalizedEmail = normalizeEmail(payload.email);
     const existingUser = await exports.findUserByEmail(normalizedEmail);
     if (existingUser) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Email đã tồn tại trong hệ thống");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Email đã tồn tại trong hệ thống");
     }
     const phoneTaken = await exports.isPhoneTaken(payload.phoneNumber);
     if (phoneTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Số điện thoại đã được sử dụng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Số điện thoại đã được sử dụng");
     }
     const patientCode = await generatePatientCode();
-    const passwordHash = await password_1.hashPassword(payload.password);
+    const passwordHash = await password.hashPassword(payload.password);
     try {
         await exports.createPatientUser({
             email: normalizedEmail,
@@ -376,15 +376,15 @@ const register = async (payload) => {
         const pgDetail = error?.detail ?? "";
         if (pgCode === "23505") {
             if (pgDetail.includes("(email)")) {
-                throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Email đã tồn tại trong hệ thống");
+                throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Email đã tồn tại trong hệ thống");
             }
             if (pgDetail.includes("(phone_number)")) {
-                throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Số điện thoại đã được sử dụng");
+                throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Số điện thoại đã được sử dụng");
             }
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Dữ liệu đăng ký đã tồn tại");
+            throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Dữ liệu đăng ký đã tồn tại");
         }
         if (pgCode === "42P01") {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR, "Database chưa khởi tạo đầy đủ. Vui lòng chạy lệnh npm run db:init trong backend.");
+            throw new app_error.AppError(http_status_codes.StatusCodes.INTERNAL_SERVER_ERROR, "Database chưa khởi tạo đầy đủ. Vui lòng chạy lệnh npm run db:init trong backend.");
         }
         throw error;
     }
@@ -408,14 +408,14 @@ const login = async (payload, meta) => {
                 reason: "TEMP_LOCK_ACTIVE",
             },
         });
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.LOCKED, `Tài khoản đăng nhập tạm thời bị khóa đến ${lockAttempt.locked_until}. Vui lòng thử lại sau.`);
+        throw new app_error.AppError(http_status_codes.StatusCodes.LOCKED, `Tài khoản đăng nhập tạm thời bị khóa đến ${lockAttempt.locked_until}. Vui lòng thử lại sau.`);
     }
     const user = await exports.findUserByEmail(normalizedEmail);
     const passwordValid = user
-        ? await password_1.comparePassword(payload.password, user.password_hash)
+        ? await password.comparePassword(payload.password, user.password_hash)
         : false;
     if (!user || !passwordValid) {
-        const attempt = await exports.recordFailedLoginAttemptByEmail(normalizedEmail, env_1.env.LOGIN_MAX_FAILED_ATTEMPTS, env_1.env.LOGIN_LOCK_MINUTES);
+        const attempt = await exports.recordFailedLoginAttemptByEmail(normalizedEmail, env.env.LOGIN_MAX_FAILED_ATTEMPTS, env.env.LOGIN_LOCK_MINUTES);
         const isLockedNow = Boolean(attempt.locked_until) && new Date(attempt.locked_until) > new Date();
         await writeAuditLogSafe({
             action: "AUTH_LOGIN_FAILED",
@@ -431,9 +431,9 @@ const login = async (payload, meta) => {
             },
         });
         if (isLockedNow) {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.LOCKED, `Tài khoản đã bị khóa tạm thời trong ${env_1.env.LOGIN_LOCK_MINUTES} phút do đăng nhập sai nhiều lần.`);
+            throw new app_error.AppError(http_status_codes.StatusCodes.LOCKED, `Tài khoản đã bị khóa tạm thời trong ${env.env.LOGIN_LOCK_MINUTES} phút do đăng nhập sai nhiều lần.`);
         }
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Email hoặc mật khẩu không đúng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.UNAUTHORIZED, "Email hoặc mật khẩu không đúng");
     }
     if (!user.is_active) {
         await writeAuditLogSafe({
@@ -447,10 +447,10 @@ const login = async (payload, meta) => {
             userAgent: meta.userAgent,
             metadata: { reason: "ACCOUNT_DISABLED" },
         });
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.FORBIDDEN, "Tài khoản đã bị khóa");
+        throw new app_error.AppError(http_status_codes.StatusCodes.FORBIDDEN, "Tài khoản đã bị khóa");
     }
     if (!user.roles.includes(payload.role)) {
-        const attempt = await exports.recordFailedLoginAttemptByEmail(normalizedEmail, env_1.env.LOGIN_MAX_FAILED_ATTEMPTS, env_1.env.LOGIN_LOCK_MINUTES);
+        const attempt = await exports.recordFailedLoginAttemptByEmail(normalizedEmail, env.env.LOGIN_MAX_FAILED_ATTEMPTS, env.env.LOGIN_LOCK_MINUTES);
         await writeAuditLogSafe({
             action: "AUTH_LOGIN_FAILED",
             actorUserId: user.id,
@@ -468,17 +468,17 @@ const login = async (payload, meta) => {
                 lockedUntil: attempt.locked_until,
             },
         });
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.FORBIDDEN, `Tài khoản không có quyền đăng nhập cổng ${roleTitleMap[payload.role]}`);
+        throw new app_error.AppError(http_status_codes.StatusCodes.FORBIDDEN, `Tài khoản không có quyền đăng nhập cổng ${roleTitleMap[payload.role]}`);
     }
-    const refreshToken = token_1.signRefreshToken({
+    const refreshToken = tokenUtils.signRefreshToken({
         sub: user.id,
         type: "refresh",
     });
-    const refreshTokenPayload = token_1.verifyRefreshToken(refreshToken);
+    const refreshTokenPayload = tokenUtils.verifyRefreshToken(refreshToken);
     const expiresAt = typeof refreshTokenPayload === "object" && refreshTokenPayload.exp
         ? new Date(refreshTokenPayload.exp * 1000)
-        : token_1.refreshTokenExpiresAt();
-    const refreshTokenHash = token_1.hashToken(refreshToken);
+        : tokenUtils.refreshTokenExpiresAt();
+    const refreshTokenHash = tokenUtils.hashToken(refreshToken);
     await exports.createAuthSession(user.id, refreshTokenHash, expiresAt, meta.ipAddress, meta.userAgent);
     await exports.touchUserLastLogin(user.id);
     await exports.clearLoginAttemptByEmail(normalizedEmail);
@@ -516,16 +516,16 @@ const forgotPassword = async (payload, meta) => {
         return { message: PASSWORD_RESET_GENERIC_MESSAGE };
     }
     const rawToken = createRawPasswordResetToken();
-    const tokenHash = token_1.hashToken(rawToken);
+    const tokenHash = tokenUtils.hashToken(rawToken);
     const expiresAt = getPasswordResetExpiresAt();
     await updatePasswordResetToken(user.id, tokenHash, expiresAt);
     const resetLink = buildPasswordResetLink(rawToken);
     try {
-        await password_reset_mailer_1.sendPasswordResetEmail({
+        await password_reset_mailer.sendPasswordResetEmail({
             toEmail: user.email,
             fullName: user.full_name,
             resetLink,
-            expiresInMinutes: env_1.env.PASSWORD_RESET_TOKEN_EXPIRES_MINUTES,
+            expiresInMinutes: env.env.PASSWORD_RESET_TOKEN_EXPIRES_MINUTES,
         });
     }
     catch (error) {
@@ -548,20 +548,20 @@ const forgotPassword = async (payload, meta) => {
     return { message: PASSWORD_RESET_GENERIC_MESSAGE };
 };
 exports.forgotPassword = forgotPassword;
-const resetPassword = async (token, payload, meta) => {
-    if (!token || typeof token !== "string") {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Token khong hop le. Hay yeu cau lai lien ket.");
+const resetPassword = async (rawToken, payload, meta) => {
+    if (!rawToken || typeof rawToken !== "string") {
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Token khong hop le. Hay yeu cau lai lien ket.");
     }
-    const tokenHash = token_1.hashToken(token);
+    const tokenHash = tokenUtils.hashToken(rawToken);
     const user = await findPatientUserByResetTokenHash(tokenHash);
     if (!user || !user.password_reset_token) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Token khong hop le. Hay yeu cau lai lien ket.");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Token khong hop le. Hay yeu cau lai lien ket.");
     }
     if (!user.password_reset_expires || new Date(user.password_reset_expires) <= new Date()) {
         await clearPasswordResetToken(user.id);
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Token da het han. Hay yeu cau lai lien ket.");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Token da het han. Hay yeu cau lai lien ket.");
     }
-    const newPasswordHash = await password_1.hashPassword(payload.password, 12);
+    const newPasswordHash = await password.hashPassword(payload.password, 12);
     await updatePasswordAndClearResetToken(user.id, newPasswordHash);
     await revokeAllSessionsByUserId(user.id);
     await clearLoginAttemptByEmail(user.email);
@@ -581,35 +581,35 @@ const resetPassword = async (token, payload, meta) => {
 exports.resetPassword = resetPassword;
 const refreshAccessToken = async (refreshToken) => {
     if (!refreshToken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Thieu refresh token");
+        throw new app_error.AppError(http_status_codes.StatusCodes.UNAUTHORIZED, "Thieu refresh token");
     }
     let refreshTokenPayload;
     try {
-        refreshTokenPayload = token_1.verifyRefreshToken(refreshToken);
+        refreshTokenPayload = tokenUtils.verifyRefreshToken(refreshToken);
     }
     catch (_error) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Refresh token khong hop le hoac da het han");
+        throw new app_error.AppError(http_status_codes.StatusCodes.UNAUTHORIZED, "Refresh token khong hop le hoac da het han");
     }
     if (typeof refreshTokenPayload !== "object" ||
         !refreshTokenPayload ||
         !refreshTokenPayload.sub ||
         refreshTokenPayload.type !== "refresh") {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Refresh token khong hop le");
+        throw new app_error.AppError(http_status_codes.StatusCodes.UNAUTHORIZED, "Refresh token khong hop le");
     }
-    const tokenHash = token_1.hashToken(refreshToken);
+    const tokenHash = tokenUtils.hashToken(refreshToken);
     const session = await exports.findSessionByTokenHash(tokenHash);
     if (!session || session.is_revoked) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Phien dang nhap khong hop le");
+        throw new app_error.AppError(http_status_codes.StatusCodes.UNAUTHORIZED, "Phien dang nhap khong hop le");
     }
     if (String(refreshTokenPayload.sub) !== session.user_id) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Phien dang nhap khong hop le");
+        throw new app_error.AppError(http_status_codes.StatusCodes.UNAUTHORIZED, "Phien dang nhap khong hop le");
     }
     if (new Date(session.expires_at) < new Date()) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Phien dang nhap da het han");
+        throw new app_error.AppError(http_status_codes.StatusCodes.UNAUTHORIZED, "Phien dang nhap da het han");
     }
     const user = await exports.findUserById(session.user_id);
     if (!user || !user.is_active) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Tai khoan khong con hop le");
+        throw new app_error.AppError(http_status_codes.StatusCodes.UNAUTHORIZED, "Tai khoan khong con hop le");
     }
     const { token } = toAuthPayload({
         id: user.id,
@@ -625,14 +625,14 @@ const logout = async (refreshToken) => {
     if (!refreshToken) {
         return;
     }
-    const tokenHash = token_1.hashToken(refreshToken);
+    const tokenHash = tokenUtils.hashToken(refreshToken);
     await exports.revokeSessionByTokenHash(tokenHash);
 };
 exports.logout = logout;
 const getCurrentUser = async (userId) => {
     const user = await exports.findUserById(userId);
     if (!user) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
     }
     return {
         id: user.id,

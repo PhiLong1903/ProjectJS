@@ -1,8 +1,8 @@
-const http_status_codes_1 = require("http-status-codes");
+const http_status_codes = require("http-status-codes");
 const PDFDocument = require("pdfkit");
-const appointment_state_1 = require("../utils/appointment-state");
-const app_error_1 = require("../utils/app-error");
-const db_1 = require("../config/db");
+const appointment_state = require("../utils/appointment-state");
+const app_error = require("../utils/app-error");
+const db = require("../config/db");
 const bookingSelect = `
   SELECT
     a.id,
@@ -34,7 +34,7 @@ const bookingSelect = `
   INNER JOIN doctor_slots ds ON ds.id = a.slot_id
 `;
 const findPatientByUserId = async (userId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT id, user_id, patient_code, phone_number
       FROM patients
       WHERE user_id = $1
@@ -44,7 +44,7 @@ const findPatientByUserId = async (userId) => {
 };
 exports.findPatientByUserId = findPatientByUserId;
 const getPatientProfileByUserId = async (userId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT
         u.id AS user_id,
         u.email,
@@ -66,7 +66,7 @@ const getPatientProfileByUserId = async (userId) => {
 };
 exports.getPatientProfileByUserId = getPatientProfileByUserId;
 const updatePatientProfileByUserId = async (userId, payload) => {
-    const client = await db_1.db.connect();
+    const client = await db.db.connect();
     try {
         await client.query("BEGIN");
         const patientRes = await client.query(`
@@ -161,14 +161,14 @@ const listPatientBookings = async (patientId, view, limit, offset) => {
     const whereClause = getBookingWhereClause(view);
     const orderClause = getBookingOrderClause(view);
     const [rowsResult, countResult] = await Promise.all([
-        db_1.query(`
+        db.query(`
         ${bookingSelect}
         WHERE a.patient_id = $1
         ${whereClause}
         ${orderClause}
         LIMIT $2 OFFSET $3
       `, [patientId, limit, offset]),
-        db_1.query(`
+        db.query(`
         SELECT COUNT(*)::text AS total
         FROM appointments a
         INNER JOIN doctor_slots ds ON ds.id = a.slot_id
@@ -183,7 +183,7 @@ const listPatientBookings = async (patientId, view, limit, offset) => {
 };
 exports.listPatientBookings = listPatientBookings;
 const findPatientBookingById = async (patientId, bookingId, client) => {
-    const executor = client ?? db_1.db;
+    const executor = client ?? db.db;
     const result = await executor.query(`
       ${bookingSelect}
       WHERE a.patient_id = $1
@@ -214,7 +214,7 @@ const findSlotForReschedule = async (slotId, client) => {
 };
 exports.findSlotForReschedule = findSlotForReschedule;
 const cancelPatientBooking = async (patientId, bookingId, reason) => {
-    const client = await db_1.db.connect();
+    const client = await db.db.connect();
     try {
         await client.query("BEGIN");
         const booking = await exports.findPatientBookingById(patientId, bookingId, client);
@@ -258,7 +258,7 @@ const cancelPatientBooking = async (patientId, bookingId, reason) => {
 };
 exports.cancelPatientBooking = cancelPatientBooking;
 const reschedulePatientBooking = async (patientId, bookingId, newSlotId, reason) => {
-    const client = await db_1.db.connect();
+    const client = await db.db.connect();
     try {
         await client.query("BEGIN");
         const booking = await exports.findPatientBookingById(patientId, bookingId, client);
@@ -320,7 +320,7 @@ const reschedulePatientBooking = async (patientId, bookingId, newSlotId, reason)
 };
 exports.reschedulePatientBooking = reschedulePatientBooking;
 const listPatientLabResults = async (patientId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT
         lr.id,
         p.patient_code,
@@ -341,7 +341,7 @@ const listPatientLabResults = async (patientId) => {
 };
 exports.listPatientLabResults = listPatientLabResults;
 const listPatientPrescriptions = async (patientId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT
         pr.id,
         pr.appointment_id,
@@ -367,7 +367,7 @@ const buildGatewayOrderCode = (method) => {
     return `${method}-${ts}-${random}`;
 };
 const listPatientPayments = async (patientId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT
         id,
         appointment_id,
@@ -390,7 +390,7 @@ const listPatientPayments = async (patientId) => {
 };
 exports.listPatientPayments = listPatientPayments;
 const findPatientAppointmentForPayment = async (patientId, appointmentId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT id, doctor_id
       FROM appointments
       WHERE id = $1
@@ -401,7 +401,7 @@ const findPatientAppointmentForPayment = async (patientId, appointmentId) => {
 };
 exports.findPatientAppointmentForPayment = findPatientAppointmentForPayment;
 const hasPaidTransactionForAppointment = async (appointmentId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT COUNT(*)::text AS total
       FROM payment_transactions
       WHERE appointment_id = $1
@@ -411,7 +411,7 @@ const hasPaidTransactionForAppointment = async (appointmentId) => {
 };
 exports.hasPaidTransactionForAppointment = hasPaidTransactionForAppointment;
 const hasPendingTransactionForAppointment = async (appointmentId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT COUNT(*)::text AS total
       FROM payment_transactions
       WHERE appointment_id = $1
@@ -427,7 +427,7 @@ const createPaymentTransaction = async (input) => {
     const gatewayOrderCode = input.gatewayOrderCode ?? (isOnline ? buildGatewayOrderCode(input.method) : null);
     const gatewayResponse = input.gatewayResponse ?? {};
     const paidAt = status === "PAID" ? new Date() : null;
-    const result = await db_1.query(`
+    const result = await db.query(`
       INSERT INTO payment_transactions (
         appointment_id,
         patient_id,
@@ -473,7 +473,7 @@ const createPaymentTransaction = async (input) => {
 };
 exports.createPaymentTransaction = createPaymentTransaction;
 const findPatientPaymentById = async (patientId, paymentId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT
         id,
         appointment_id,
@@ -499,7 +499,7 @@ const findPatientPaymentById = async (patientId, paymentId) => {
 };
 exports.findPatientPaymentById = findPatientPaymentById;
 const completePaymentTransaction = async (paymentId, input) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       UPDATE payment_transactions
       SET
         status = 'PAID',
@@ -527,7 +527,7 @@ const completePaymentTransaction = async (paymentId, input) => {
 };
 exports.completePaymentTransaction = completePaymentTransaction;
 const failPaymentTransaction = async (paymentId, input) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       UPDATE payment_transactions
       SET
         status = 'FAILED',
@@ -553,7 +553,7 @@ const failPaymentTransaction = async (paymentId, input) => {
 };
 exports.failPaymentTransaction = failPaymentTransaction;
 const getInvoiceDetailByPaymentId = async (patientId, paymentId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT
         pt.id,
         pt.invoice_code,
@@ -615,7 +615,7 @@ const buildPaymentInvoicePdf = async (invoice) => new Promise((resolve, reject) 
 });
 exports.buildPaymentInvoicePdf = buildPaymentInvoicePdf;
 const createNotificationForPatient = async (patientId, title, message, type) => {
-    await db_1.query(`
+    await db.query(`
       INSERT INTO notifications (user_id, title, message, type)
       SELECT p.user_id, $2, $3, $4
       FROM patients p
@@ -624,7 +624,7 @@ const createNotificationForPatient = async (patientId, title, message, type) => 
 };
 exports.createNotificationForPatient = createNotificationForPatient;
 const listNotificationsByUserId = async (userId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT id, title, message, type, is_read, created_at::text
       FROM notifications
       WHERE user_id = $1
@@ -635,7 +635,7 @@ const listNotificationsByUserId = async (userId) => {
 };
 exports.listNotificationsByUserId = listNotificationsByUserId;
 const markNotificationAsRead = async (userId, notificationId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       UPDATE notifications
       SET is_read = TRUE
       WHERE id = $1
@@ -646,7 +646,7 @@ const markNotificationAsRead = async (userId, notificationId) => {
 };
 exports.markNotificationAsRead = markNotificationAsRead;
 const createDoctorReview = async (input) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       INSERT INTO doctor_reviews (appointment_id, doctor_id, patient_id, rating, comment)
       SELECT a.id, a.doctor_id, a.patient_id, $3, $4
       FROM appointments a
@@ -658,12 +658,12 @@ const createDoctorReview = async (input) => {
 };
 exports.createDoctorReview = createDoctorReview;
 const findReviewByAppointmentId = async (appointmentId) => {
-    const result = await db_1.query("SELECT COUNT(*)::text AS total FROM doctor_reviews WHERE appointment_id = $1", [appointmentId]);
+    const result = await db.query("SELECT COUNT(*)::text AS total FROM doctor_reviews WHERE appointment_id = $1", [appointmentId]);
     return Number(result.rows[0]?.total ?? 0) > 0;
 };
 exports.findReviewByAppointmentId = findReviewByAppointmentId;
 const findAppointmentForReview = async (patientId, appointmentId) => {
-    const result = await db_1.query(`
+    const result = await db.query(`
       SELECT id, doctor_id, status
       FROM appointments
       WHERE id = $1
@@ -674,7 +674,7 @@ const findAppointmentForReview = async (patientId, appointmentId) => {
 };
 exports.findAppointmentForReview = findAppointmentForReview;
 const notifyDoctorByDoctorId = async (doctorId, title, message, type) => {
-    await db_1.query(`
+    await db.query(`
       INSERT INTO notifications (user_id, title, message, type)
       SELECT user_id, $2, $3, $4
       FROM doctors
@@ -690,17 +690,17 @@ const toAppointmentDateTime = (slotDate, startTime) => {
 const assertBeforeHours = (slotDate, startTime, minimumHours, message) => {
     const appointmentTime = toAppointmentDateTime(slotDate, startTime);
     if (Number.isNaN(appointmentTime.getTime())) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Thời gian lịch khám không hợp lệ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Thời gian lịch khám không hợp lệ");
     }
     const diffMs = appointmentTime.getTime() - Date.now();
     if (diffMs < minimumHours * 60 * 60 * 1000) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, message);
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, message);
     }
 };
 const getPatientOrThrow = async (userId) => {
     const patient = await exports.findPatientByUserId(userId);
     if (!patient) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy hồ sơ bệnh nhân");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy hồ sơ bệnh nhân");
     }
     return patient;
 };
@@ -722,7 +722,7 @@ const getMyProfile = async (userId) => {
     await getPatientOrThrow(userId);
     const profile = await exports.getPatientProfileByUserId(userId);
     if (!profile) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay ho so benh nhan");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay ho so benh nhan");
     }
     return profile;
 };
@@ -732,16 +732,16 @@ const updateMyProfile = async (userId, payload) => {
     try {
         const updated = await exports.updatePatientProfileByUserId(userId, payload);
         if (!updated) {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay ho so benh nhan");
+            throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay ho so benh nhan");
         }
         return updated;
     }
     catch (error) {
-        if (error instanceof app_error_1.AppError) {
+        if (error instanceof app_error.AppError) {
             throw error;
         }
         const message = error instanceof Error ? error.message : "Khong the cap nhat ho so";
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, message);
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, message);
     }
 };
 exports.updateMyProfile = updateMyProfile;
@@ -754,15 +754,15 @@ const cancelMyBooking = async (userId, bookingId, reason) => {
     const patient = await getPatientOrThrow(userId);
     const booking = await exports.findPatientBookingById(patient.id, bookingId);
     if (!booking) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
     }
-    if (!(0, appointment_state_1.isPatientCancelableStatus)(booking.status)) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Lich kham khong the huy o trang thai hien tai");
+    if (!(0, appointment_state.isPatientCancelableStatus)(booking.status)) {
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Lich kham khong the huy o trang thai hien tai");
     }
     assertBeforeHours(booking.slot_date, booking.start_time, 2, "Chi duoc huy lich truoc it nhat 2 gio");
     const updated = await exports.cancelPatientBooking(patient.id, bookingId, reason);
     if (!updated) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
     }
     return updated;
 };
@@ -771,25 +771,25 @@ const rescheduleMyBooking = async (userId, bookingId, newSlotId, reason) => {
     const patient = await getPatientOrThrow(userId);
     const booking = await exports.findPatientBookingById(patient.id, bookingId);
     if (!booking) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
     }
-    if (!(0, appointment_state_1.isPatientReschedulableStatus)(booking.status)) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Lich kham khong the doi o trang thai hien tai");
+    if (!(0, appointment_state.isPatientReschedulableStatus)(booking.status)) {
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Lich kham khong the doi o trang thai hien tai");
     }
     assertBeforeHours(booking.slot_date, booking.start_time, 2, "Chi duoc doi lich truoc it nhat 2 gio");
     try {
         const updated = await exports.reschedulePatientBooking(patient.id, bookingId, newSlotId, reason);
         if (!updated) {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
+            throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
         }
         return updated;
     }
     catch (error) {
-        if (error instanceof app_error_1.AppError) {
+        if (error instanceof app_error.AppError) {
             throw error;
         }
         const message = error instanceof Error ? error.message : "Khong the doi lich kham";
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, message);
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, message);
     }
 };
 exports.rescheduleMyBooking = rescheduleMyBooking;
@@ -812,21 +812,21 @@ const payMyAppointment = async (userId, payload) => {
     const patient = await getPatientOrThrow(userId);
     const appointment = await exports.findPatientAppointmentForPayment(patient.id, payload.appointmentId);
     if (!appointment) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
     }
     const hasPaid = await exports.hasPaidTransactionForAppointment(payload.appointmentId);
     if (hasPaid) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Lich kham nay da duoc thanh toan");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Lich kham nay da duoc thanh toan");
     }
     const isOnline = isOnlinePaymentMethod(payload.method);
     const isDirect = DIRECT_PAYMENT_METHODS.has(payload.method);
     if (!isOnline && !isDirect) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Phuong thuc thanh toan khong hop le");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Phuong thuc thanh toan khong hop le");
     }
     if (isOnline) {
         const hasPending = await exports.hasPendingTransactionForAppointment(payload.appointmentId);
         if (hasPending) {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Da ton tai giao dich online cho lich kham nay");
+            throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Da ton tai giao dich online cho lich kham nay");
         }
     }
     const nowIso = new Date().toISOString();
@@ -857,16 +857,16 @@ const confirmMyOnlinePayment = async (userId, paymentId, payload) => {
     const patient = await getPatientOrThrow(userId);
     const payment = await exports.findPatientPaymentById(patient.id, paymentId);
     if (!payment) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay giao dich thanh toan");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay giao dich thanh toan");
     }
     if (!isOnlinePaymentMethod(payment.payment_method)) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Giao dich nay khong phai thanh toan online");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Giao dich nay khong phai thanh toan online");
     }
     if (payment.status === "PAID") {
         return payment;
     }
     if (payment.status !== "PENDING") {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Chi giao dich PENDING moi duoc xac nhan");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Chi giao dich PENDING moi duoc xac nhan");
     }
     const completed = await exports.completePaymentTransaction(paymentId, {
         gatewayTransactionCode: payload.gatewayTransactionCode ?? buildGatewayTransactionCode(payment.payment_gateway ?? payment.payment_method),
@@ -876,7 +876,7 @@ const confirmMyOnlinePayment = async (userId, paymentId, payload) => {
         },
     });
     if (!completed) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Khong the cap nhat trang thai giao dich");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Khong the cap nhat trang thai giao dich");
     }
     await exports.createNotificationForPatient(patient.id, "Thanh toan thanh cong", `Giao dich ${completed.invoice_code} da duoc xac nhan thanh cong.`, "PAYMENT_PAID");
     return completed;
@@ -886,16 +886,16 @@ const failMyOnlinePayment = async (userId, paymentId, payload) => {
     const patient = await getPatientOrThrow(userId);
     const payment = await exports.findPatientPaymentById(patient.id, paymentId);
     if (!payment) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay giao dich thanh toan");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay giao dich thanh toan");
     }
     if (!isOnlinePaymentMethod(payment.payment_method)) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Giao dich nay khong phai thanh toan online");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Giao dich nay khong phai thanh toan online");
     }
     if (payment.status === "FAILED") {
         return payment;
     }
     if (payment.status === "PAID") {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Giao dich da thanh toan thanh cong, khong the danh dau that bai");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Giao dich da thanh toan thanh cong, khong the danh dau that bai");
     }
     const failed = await exports.failPaymentTransaction(paymentId, {
         gatewayResponse: {
@@ -905,7 +905,7 @@ const failMyOnlinePayment = async (userId, paymentId, payload) => {
         },
     });
     if (!failed) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Khong the cap nhat giao dich that bai");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Khong the cap nhat giao dich that bai");
     }
     await exports.createNotificationForPatient(patient.id, "Thanh toan that bai", `Giao dich ${failed.invoice_code} da duoc cap nhat that bai.`, "PAYMENT_FAILED");
     return failed;
@@ -915,10 +915,10 @@ const getMyPaymentInvoicePdf = async (userId, paymentId) => {
     const patient = await getPatientOrThrow(userId);
     const invoice = await exports.getInvoiceDetailByPaymentId(patient.id, paymentId);
     if (!invoice) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay hoa don");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay hoa don");
     }
     if (invoice.status !== "PAID") {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Chi xuat hoa don cho giao dich da thanh toan");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Chi xuat hoa don cho giao dich da thanh toan");
     }
     const body = await exports.buildPaymentInvoicePdf(invoice);
     const safeInvoiceCode = (invoice.invoice_code ?? paymentId).replace(/[^a-zA-Z0-9_-]/g, "_");
@@ -934,7 +934,7 @@ exports.getMyNotifications = getMyNotifications;
 const readMyNotification = async (userId, notificationId) => {
     const ok = await exports.markNotificationAsRead(userId, notificationId);
     if (!ok) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay thong bao");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay thong bao");
     }
 };
 exports.readMyNotification = readMyNotification;
@@ -942,14 +942,14 @@ const createMyReview = async (userId, payload) => {
     const patient = await getPatientOrThrow(userId);
     const appointment = await exports.findAppointmentForReview(patient.id, payload.appointmentId);
     if (!appointment) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay lich kham");
     }
-    if (!(0, appointment_state_1.isTerminalAppointmentStatus)(appointment.status) || appointment.status !== "COMPLETED") {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Chi duoc danh gia sau khi lich kham da hoan tat");
+    if (!(0, appointment_state.isTerminalAppointmentStatus)(appointment.status) || appointment.status !== "COMPLETED") {
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Chi duoc danh gia sau khi lich kham da hoan tat");
     }
     const hasReview = await exports.findReviewByAppointmentId(payload.appointmentId);
     if (hasReview) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Ban da danh gia lich kham nay");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Ban da danh gia lich kham nay");
     }
     const review = await exports.createDoctorReview({
         appointmentId: payload.appointmentId,

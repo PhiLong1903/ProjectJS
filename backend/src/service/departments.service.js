@@ -1,11 +1,8 @@
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-const http_status_codes_1 = require("http-status-codes");
-const slugify_1 = __importDefault(require("slugify"));
-const sequelize_1 = require("sequelize");
-const app_error_1 = require("../utils/app-error");
-const SequelizeModels_1 = require("../schemas/SequelizeModels");
+const http_status_codes = require("http-status-codes");
+const slugify = require("slugify");
+const sequelize = require("sequelize");
+const app_error = require("../utils/app-error");
+const SequelizeModels = require("../schemas/SequelizeModels");
 const toRecord = (row) => ({
     id: row.id,
     name: row.name,
@@ -18,7 +15,7 @@ const toRecord = (row) => ({
     updated_at: row.updated_at.toISOString(),
 });
 const listDepartments = async (limit, offset) => {
-    const { rows, count } = await SequelizeModels_1.DepartmentModel.findAndCountAll({
+    const { rows, count } = await SequelizeModels.DepartmentModel.findAndCountAll({
         where: { is_active: true, is_deleted: false },
         order: [["name", "ASC"]],
         limit,
@@ -31,7 +28,7 @@ const listDepartments = async (limit, offset) => {
 };
 exports.listDepartments = listDepartments;
 const listDepartmentsForAdmin = async () => {
-    const rows = await SequelizeModels_1.DepartmentModel.findAll({
+    const rows = await SequelizeModels.DepartmentModel.findAll({
         where: { is_deleted: false },
         order: [["created_at", "DESC"]],
     });
@@ -39,14 +36,14 @@ const listDepartmentsForAdmin = async () => {
 };
 exports.listDepartmentsForAdmin = listDepartmentsForAdmin;
 const findDepartmentById = async (departmentId) => {
-    const row = await SequelizeModels_1.DepartmentModel.findOne({
+    const row = await SequelizeModels.DepartmentModel.findOne({
         where: { id: departmentId, is_deleted: false },
     });
     return row ? toRecord(row) : null;
 };
 exports.findDepartmentById = findDepartmentById;
 const createDepartment = async (input) => {
-    const row = await SequelizeModels_1.DepartmentModel.create({
+    const row = await SequelizeModels.DepartmentModel.create({
         name: input.name,
         slug: input.slug,
         description: input.description ?? null,
@@ -58,9 +55,9 @@ const createDepartment = async (input) => {
 };
 exports.createDepartment = createDepartment;
 const updateDepartment = async (departmentId, input) => {
-    const row = await SequelizeModels_1.DepartmentModel.findOne({ where: { id: departmentId, is_deleted: false } });
+    const row = await SequelizeModels.DepartmentModel.findOne({ where: { id: departmentId, is_deleted: false } });
     if (!row) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy khoa");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy khoa");
     }
     await row.update({
         name: input.name,
@@ -75,7 +72,7 @@ const updateDepartment = async (departmentId, input) => {
 };
 exports.updateDepartment = updateDepartment;
 const deleteDepartment = async (departmentId) => {
-    await SequelizeModels_1.DepartmentModel.update({
+    await SequelizeModels.DepartmentModel.update({
         is_deleted: true,
         is_active: false,
         updated_at: new Date(),
@@ -83,11 +80,11 @@ const deleteDepartment = async (departmentId) => {
 };
 exports.deleteDepartment = deleteDepartment;
 const isDepartmentSlugTaken = async (slug, exceptId) => {
-    const total = await SequelizeModels_1.DepartmentModel.count({
+    const total = await SequelizeModels.DepartmentModel.count({
         where: {
             slug,
             is_deleted: false,
-            ...(exceptId ? { id: { [sequelize_1.Op.ne]: exceptId } } : {}),
+            ...(exceptId ? { id: { [sequelize.Op.ne]: exceptId } } : {}),
         },
     });
     return total > 0;
@@ -98,14 +95,14 @@ exports.getDepartmentList = getDepartmentList;
 const getDepartmentAdminList = () => exports.listDepartmentsForAdmin();
 exports.getDepartmentAdminList = getDepartmentAdminList;
 const createDepartmentService = async (payload) => {
-    const normalizedSlug = slugify_1.default(payload.slug ?? payload.name, {
+    const normalizedSlug = slugify(payload.slug ?? payload.name, {
         lower: true,
         trim: true,
         strict: true,
     });
     const slugTaken = await exports.isDepartmentSlugTaken(normalizedSlug);
     if (slugTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Slug khoa đã tồn tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Slug khoa đã tồn tại");
     }
     return exports.createDepartment({
         ...payload,
@@ -116,16 +113,16 @@ exports.createDepartmentService = createDepartmentService;
 const updateDepartmentService = async (departmentId, payload) => {
     const existing = await exports.findDepartmentById(departmentId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy khoa");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy khoa");
     }
-    const normalizedSlug = slugify_1.default(payload.slug ?? payload.name, {
+    const normalizedSlug = slugify(payload.slug ?? payload.name, {
         lower: true,
         trim: true,
         strict: true,
     });
     const slugTaken = await exports.isDepartmentSlugTaken(normalizedSlug, departmentId);
     if (slugTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Slug khoa đã tồn tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Slug khoa đã tồn tại");
     }
     return exports.updateDepartment(departmentId, {
         ...payload,
@@ -136,7 +133,7 @@ exports.updateDepartmentService = updateDepartmentService;
 const deleteDepartmentService = async (departmentId) => {
     const existing = await exports.findDepartmentById(departmentId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy khoa");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy khoa");
     }
     await exports.deleteDepartment(departmentId);
 };

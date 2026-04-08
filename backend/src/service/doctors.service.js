@@ -1,7 +1,7 @@
-const http_status_codes_1 = require("http-status-codes");
-const sequelize_1 = require("sequelize");
-const app_error_1 = require("../utils/app-error");
-const SequelizeModels_1 = require("../schemas/SequelizeModels");
+const http_status_codes = require("http-status-codes");
+const sequelize = require("sequelize");
+const app_error = require("../utils/app-error");
+const SequelizeModels = require("../schemas/SequelizeModels");
 const toDoctorRecord = (row) => ({
     id: row.id,
     doctor_code: row.doctor_code,
@@ -29,19 +29,19 @@ const listDoctors = async (limit, offset, departmentId, keyword) => {
         ...(departmentId ? { department_id: departmentId } : {}),
         ...(keyword
             ? {
-                [sequelize_1.Op.or]: [
-                    { full_name: { [sequelize_1.Op.iLike]: `%${keyword}%` } },
-                    { specialty: { [sequelize_1.Op.iLike]: `%${keyword}%` } },
-                    { description: { [sequelize_1.Op.iLike]: `%${keyword}%` } },
+                [sequelize.Op.or]: [
+                    { full_name: { [sequelize.Op.iLike]: `%${keyword}%` } },
+                    { specialty: { [sequelize.Op.iLike]: `%${keyword}%` } },
+                    { description: { [sequelize.Op.iLike]: `%${keyword}%` } },
                 ],
             }
             : {}),
     };
-    const { rows, count } = await SequelizeModels_1.DoctorModel.findAndCountAll({
+    const { rows, count } = await SequelizeModels.DoctorModel.findAndCountAll({
         where,
         include: [
             {
-                model: SequelizeModels_1.DepartmentModel,
+                model: SequelizeModels.DepartmentModel,
                 as: "department",
                 required: true,
                 where: { is_deleted: false },
@@ -58,11 +58,11 @@ const listDoctors = async (limit, offset, departmentId, keyword) => {
 };
 exports.listDoctors = listDoctors;
 const listDoctorsForAdmin = async () => {
-    const rows = await SequelizeModels_1.DoctorModel.findAll({
+    const rows = await SequelizeModels.DoctorModel.findAll({
         where: { is_deleted: false },
         include: [
             {
-                model: SequelizeModels_1.DepartmentModel,
+                model: SequelizeModels.DepartmentModel,
                 as: "department",
                 required: true,
                 where: { is_deleted: false },
@@ -74,11 +74,11 @@ const listDoctorsForAdmin = async () => {
 };
 exports.listDoctorsForAdmin = listDoctorsForAdmin;
 const findDoctorById = async (doctorId) => {
-    const row = await SequelizeModels_1.DoctorModel.findOne({
+    const row = await SequelizeModels.DoctorModel.findOne({
         where: { id: doctorId, is_deleted: false },
         include: [
             {
-                model: SequelizeModels_1.DepartmentModel,
+                model: SequelizeModels.DepartmentModel,
                 as: "department",
                 required: true,
                 where: { is_deleted: false },
@@ -89,18 +89,18 @@ const findDoctorById = async (doctorId) => {
 };
 exports.findDoctorById = findDoctorById;
 const isDoctorCodeTaken = async (doctorCode, exceptId) => {
-    const total = await SequelizeModels_1.DoctorModel.count({
+    const total = await SequelizeModels.DoctorModel.count({
         where: {
             doctor_code: doctorCode,
             is_deleted: false,
-            ...(exceptId ? { id: { [sequelize_1.Op.ne]: exceptId } } : {}),
+            ...(exceptId ? { id: { [sequelize.Op.ne]: exceptId } } : {}),
         },
     });
     return total > 0;
 };
 exports.isDoctorCodeTaken = isDoctorCodeTaken;
 const createDoctor = async (input) => {
-    const row = await SequelizeModels_1.DoctorModel.create({
+    const row = await SequelizeModels.DoctorModel.create({
         doctor_code: input.doctorCode,
         full_name: input.fullName,
         specialty: input.specialty ?? null,
@@ -112,15 +112,15 @@ const createDoctor = async (input) => {
     });
     const detail = await exports.findDoctorById(row.id);
     if (!detail) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
     }
     return detail;
 };
 exports.createDoctor = createDoctor;
 const updateDoctor = async (doctorId, input) => {
-    const row = await SequelizeModels_1.DoctorModel.findOne({ where: { id: doctorId, is_deleted: false } });
+    const row = await SequelizeModels.DoctorModel.findOne({ where: { id: doctorId, is_deleted: false } });
     if (!row) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
     }
     await row.update({
         doctor_code: input.doctorCode,
@@ -135,13 +135,13 @@ const updateDoctor = async (doctorId, input) => {
     });
     const detail = await exports.findDoctorById(row.id);
     if (!detail) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
     }
     return detail;
 };
 exports.updateDoctor = updateDoctor;
 const deleteDoctor = async (doctorId) => {
-    await SequelizeModels_1.DoctorModel.update({
+    await SequelizeModels.DoctorModel.update({
         is_deleted: true,
         is_active: false,
         updated_at: new Date(),
@@ -149,11 +149,11 @@ const deleteDoctor = async (doctorId) => {
 };
 exports.deleteDoctor = deleteDoctor;
 const listDoctorSlotsByDate = async (doctorId, date) => {
-    const rows = await SequelizeModels_1.DoctorSlotModel.findAll({
+    const rows = await SequelizeModels.DoctorSlotModel.findAll({
         where: {
             doctor_id: doctorId,
             is_deleted: false,
-            ...(date ? { slot_date: date } : { slot_date: { [sequelize_1.Op.gte]: new Date().toISOString().slice(0, 10) } }),
+            ...(date ? { slot_date: date } : { slot_date: { [sequelize.Op.gte]: new Date().toISOString().slice(0, 10) } }),
         },
         order: [
             ["slot_date", "ASC"],
@@ -165,7 +165,7 @@ const listDoctorSlotsByDate = async (doctorId, date) => {
 };
 exports.listDoctorSlotsByDate = listDoctorSlotsByDate;
 const createDoctorSlot = async (input) => {
-    const row = await SequelizeModels_1.DoctorSlotModel.create({
+    const row = await SequelizeModels.DoctorSlotModel.create({
         doctor_id: input.doctorId,
         slot_date: input.slotDate,
         start_time: input.startTime,
@@ -175,7 +175,7 @@ const createDoctorSlot = async (input) => {
 };
 exports.createDoctorSlot = createDoctorSlot;
 const deleteDoctorSlot = async (slotId) => {
-    await SequelizeModels_1.DoctorSlotModel.update({
+    await SequelizeModels.DoctorSlotModel.update({
         is_deleted: true,
         is_available: false,
         updated_at: new Date(),
@@ -189,7 +189,7 @@ exports.getDoctorsAdmin = getDoctorsAdmin;
 const createDoctorService = async (payload) => {
     const codeTaken = await exports.isDoctorCodeTaken(payload.doctorCode);
     if (codeTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Mã bác sĩ đã tồn tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Mã bác sĩ đã tồn tại");
     }
     return exports.createDoctor(payload);
 };
@@ -197,11 +197,11 @@ exports.createDoctorService = createDoctorService;
 const updateDoctorService = async (doctorId, payload) => {
     const existing = await exports.findDoctorById(doctorId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
     }
     const codeTaken = await exports.isDoctorCodeTaken(payload.doctorCode, doctorId);
     if (codeTaken) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Mã bác sĩ đã tồn tại");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Mã bác sĩ đã tồn tại");
     }
     return exports.updateDoctor(doctorId, payload);
 };
@@ -209,7 +209,7 @@ exports.updateDoctorService = updateDoctorService;
 const deleteDoctorService = async (doctorId) => {
     const existing = await exports.findDoctorById(doctorId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
     }
     await exports.deleteDoctor(doctorId);
 };
@@ -217,7 +217,7 @@ exports.deleteDoctorService = deleteDoctorService;
 const getDoctorSlots = async (doctorId, date) => {
     const existing = await exports.findDoctorById(doctorId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
     }
     return exports.listDoctorSlotsByDate(doctorId, date);
 };
@@ -225,10 +225,10 @@ exports.getDoctorSlots = getDoctorSlots;
 const createDoctorSlotService = async (payload) => {
     const existing = await exports.findDoctorById(payload.doctorId);
     if (!existing) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy bác sĩ");
     }
     if (payload.startTime >= payload.endTime) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
     }
     return exports.createDoctorSlot(payload);
 };

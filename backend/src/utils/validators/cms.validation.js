@@ -1,5 +1,5 @@
-const zod_1 = require("zod");
-exports.cmsPageBodySchema = zod_1.z.object({
-    title: zod_1.z.string().min(2).max(180),
-    content: zod_1.z.record(zod_1.z.any()),
+const zod = require("zod");
+exports.cmsPageBodySchema = zod.z.object({
+    title: zod.z.string().min(2).max(180),
+    content: zod.z.record(zod.z.any()),
 });

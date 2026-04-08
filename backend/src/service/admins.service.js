@@ -1,15 +1,12 @@
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-const pdfkit_1 = __importDefault(require("pdfkit"));
-const sequelize_1 = require("sequelize");
-const http_status_codes_1 = require("http-status-codes");
-const notification_queue_service_1 = require("../utils/notification-queue.service");
-const password_1 = require("../utils/password");
-const app_error_1 = require("../utils/app-error");
-const SequelizeModels_1 = require("../schemas/SequelizeModels");
-const sequelize_2 = require("../config/sequelize");
-const db_1 = require("../config/db");
+const PDFDocument = require("pdfkit");
+const sequelize = require("sequelize");
+const http_status_codes = require("http-status-codes");
+const notification_queue_service = require("../utils/notification-queue.service");
+const password = require("../utils/password");
+const app_error = require("../utils/app-error");
+const SequelizeModels = require("../schemas/SequelizeModels");
+const sequelizeConfig = require("../config/sequelize");
+const db = require("../config/db");
 const getAdminOverview = async () => {
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -22,83 +19,83 @@ const getAdminOverview = async () => {
     const monthStart = dateOnly(startOfMonth);
     const nextMonthStart = dateOnly(startOfNextMonth);
     const [newPatientsToday, newPatientsMonth, appointmentsToday, appointmentsMonth, revenueToday, revenueMonth, totalUsers, activeDoctors,] = await Promise.all([
-        SequelizeModels_1.PatientModel.count({
+        SequelizeModels.PatientModel.count({
             where: {
                 created_at: {
-                    [sequelize_1.Op.gte]: startOfToday,
-                    [sequelize_1.Op.lt]: startOfTomorrow,
+                    [sequelize.Op.gte]: startOfToday,
+                    [sequelize.Op.lt]: startOfTomorrow,
                 },
             },
         }),
-        SequelizeModels_1.PatientModel.count({
+        SequelizeModels.PatientModel.count({
             where: {
                 created_at: {
-                    [sequelize_1.Op.gte]: startOfMonth,
-                    [sequelize_1.Op.lt]: startOfNextMonth,
+                    [sequelize.Op.gte]: startOfMonth,
+                    [sequelize.Op.lt]: startOfNextMonth,
                 },
             },
         }),
-        SequelizeModels_1.AppointmentModel.count({
+        SequelizeModels.AppointmentModel.count({
             include: [
                 {
-                    model: SequelizeModels_1.DoctorSlotModel,
+                    model: SequelizeModels.DoctorSlotModel,
                     as: "slot",
                     required: true,
                     where: {
                         slot_date: {
-                            [sequelize_1.Op.gte]: today,
-                            [sequelize_1.Op.lt]: tomorrow,
+                            [sequelize.Op.gte]: today,
+                            [sequelize.Op.lt]: tomorrow,
                         },
                     },
                 },
             ],
         }),
-        SequelizeModels_1.AppointmentModel.count({
+        SequelizeModels.AppointmentModel.count({
             include: [
                 {
-                    model: SequelizeModels_1.DoctorSlotModel,
+                    model: SequelizeModels.DoctorSlotModel,
                     as: "slot",
                     required: true,
                     where: {
                         slot_date: {
-                            [sequelize_1.Op.gte]: monthStart,
-                            [sequelize_1.Op.lt]: nextMonthStart,
+                            [sequelize.Op.gte]: monthStart,
+                            [sequelize.Op.lt]: nextMonthStart,
                         },
                     },
                 },
             ],
         }),
-        SequelizeModels_1.PaymentTransactionModel.sum("amount", {
+        SequelizeModels.PaymentTransactionModel.sum("amount", {
             where: {
                 status: "PAID",
                 paid_at: {
-                    [sequelize_1.Op.gte]: startOfToday,
-                    [sequelize_1.Op.lt]: startOfTomorrow,
+                    [sequelize.Op.gte]: startOfToday,
+                    [sequelize.Op.lt]: startOfTomorrow,
                 },
             },
         }),
-        SequelizeModels_1.PaymentTransactionModel.sum("amount", {
+        SequelizeModels.PaymentTransactionModel.sum("amount", {
             where: {
                 status: "PAID",
                 paid_at: {
-                    [sequelize_1.Op.gte]: startOfMonth,
-                    [sequelize_1.Op.lt]: startOfNextMonth,
+                    [sequelize.Op.gte]: startOfMonth,
+                    [sequelize.Op.lt]: startOfNextMonth,
                 },
             },
         }),
-        SequelizeModels_1.UserModel.count({
+        SequelizeModels.UserModel.count({
             where: {
                 is_deleted: false,
             },
         }),
-        SequelizeModels_1.DoctorModel.count({
+        SequelizeModels.DoctorModel.count({
             where: {
                 is_active: true,
                 is_deleted: false,
             },
             include: [
                 {
-                    model: SequelizeModels_1.UserModel,
+                    model: SequelizeModels.UserModel,
                     as: "user",
                     required: true,
                     where: {
@@ -124,23 +121,23 @@ exports.getAdminOverview = getAdminOverview;
 const listAdminUsers = async (input) => {
     const userWhere = { is_deleted: false };
     if (input.keyword) {
-        userWhere[sequelize_1.Op.or] = [
-            { email: { [sequelize_1.Op.iLike]: `%${input.keyword}%` } },
-            { full_name: { [sequelize_1.Op.iLike]: `%${input.keyword}%` } },
+        userWhere[sequelize.Op.or] = [
+            { email: { [sequelize.Op.iLike]: `%${input.keyword}%` } },
+            { full_name: { [sequelize.Op.iLike]: `%${input.keyword}%` } },
         ];
     }
-    const result = await SequelizeModels_1.UserModel.findAndCountAll({
+    const result = await SequelizeModels.UserModel.findAndCountAll({
         where: userWhere,
         attributes: ["id", "email", "full_name", "is_active", "created_at"],
         include: [
             {
-                model: SequelizeModels_1.UserRoleModel,
+                model: SequelizeModels.UserRoleModel,
                 as: "user_roles",
                 required: Boolean(input.role),
                 attributes: ["role_id"],
                 include: [
                     {
-                        model: SequelizeModels_1.RoleModel,
+                        model: SequelizeModels.RoleModel,
                         as: "role",
                         required: Boolean(input.role),
                         attributes: ["name"],
@@ -148,9 +145,9 @@ const listAdminUsers = async (input) => {
                     },
                 ],
             },
-            { model: SequelizeModels_1.PatientModel, as: "patient", required: false, attributes: ["patient_code"] },
+            { model: SequelizeModels.PatientModel, as: "patient", required: false, attributes: ["patient_code"] },
             {
-                model: SequelizeModels_1.DoctorModel,
+                model: SequelizeModels.DoctorModel,
                 as: "doctor",
                 required: false,
                 attributes: ["doctor_code"],
@@ -184,7 +181,7 @@ const listAdminUsers = async (input) => {
 };
 exports.listAdminUsers = listAdminUsers;
 const findUserByEmail = async (email) => {
-    const user = await SequelizeModels_1.UserModel.findOne({
+    const user = await SequelizeModels.UserModel.findOne({
         where: {
             email,
             is_deleted: false,
@@ -195,14 +192,14 @@ const findUserByEmail = async (email) => {
 };
 exports.findUserByEmail = findUserByEmail;
 const isPhoneUsed = async (phoneNumber) => {
-    const total = await SequelizeModels_1.PatientModel.count({
+    const total = await SequelizeModels.PatientModel.count({
         where: { phone_number: phoneNumber },
     });
     return total > 0;
 };
 exports.isPhoneUsed = isPhoneUsed;
 const isDoctorCodeUsed = async (doctorCode) => {
-    const total = await SequelizeModels_1.DoctorModel.count({
+    const total = await SequelizeModels.DoctorModel.count({
         where: {
             doctor_code: doctorCode,
             is_deleted: false,
@@ -212,34 +209,34 @@ const isDoctorCodeUsed = async (doctorCode) => {
 };
 exports.isDoctorCodeUsed = isDoctorCodeUsed;
 const isPatientCodeUsed = async (patientCode) => {
-    const total = await SequelizeModels_1.PatientModel.count({
+    const total = await SequelizeModels.PatientModel.count({
         where: { patient_code: patientCode },
     });
     return total > 0;
 };
 exports.isPatientCodeUsed = isPatientCodeUsed;
 const createAdminUser = async (payload) => {
-    return sequelize_2.sequelize.transaction(async (transaction) => {
-        const user = await SequelizeModels_1.UserModel.create({
+    return sequelizeConfig.sequelize.transaction(async (transaction) => {
+        const user = await SequelizeModels.UserModel.create({
             email: payload.email,
             full_name: payload.fullName,
             password_hash: payload.passwordHash,
             is_active: true,
             is_deleted: false,
         }, { transaction });
-        const roleRows = await SequelizeModels_1.RoleModel.findAll({
-            where: { name: { [sequelize_1.Op.in]: payload.roles } },
+        const roleRows = await SequelizeModels.RoleModel.findAll({
+            where: { name: { [sequelize.Op.in]: payload.roles } },
             attributes: ["id", "name"],
             transaction,
         });
         if (roleRows.length > 0) {
-            await SequelizeModels_1.UserRoleModel.bulkCreate(roleRows.map((role) => ({
+            await SequelizeModels.UserRoleModel.bulkCreate(roleRows.map((role) => ({
                 user_id: user.id,
                 role_id: role.id,
             })), { transaction, ignoreDuplicates: true });
         }
         if (payload.roles.includes("PATIENT") && payload.patientProfile) {
-            await SequelizeModels_1.PatientModel.create({
+            await SequelizeModels.PatientModel.create({
                 user_id: user.id,
                 patient_code: payload.patientProfile.patientCode,
                 phone_number: payload.patientProfile.phoneNumber,
@@ -250,7 +247,7 @@ const createAdminUser = async (payload) => {
             }, { transaction });
         }
         if (payload.roles.includes("DOCTOR") && payload.doctorProfile) {
-            await SequelizeModels_1.DoctorModel.create({
+            await SequelizeModels.DoctorModel.create({
                 user_id: user.id,
                 doctor_code: payload.doctorProfile.doctorCode,
                 full_name: payload.fullName,
@@ -273,7 +270,7 @@ const createAdminUser = async (payload) => {
 };
 exports.createAdminUser = createAdminUser;
 const findUserById = async (userId) => {
-    const user = await SequelizeModels_1.UserModel.findOne({
+    const user = await SequelizeModels.UserModel.findOne({
         where: {
             id: userId,
             is_deleted: false,
@@ -292,7 +289,7 @@ const updateAdminUserBasic = async (userId, payload) => {
     if (Object.keys(updateData).length === 0) {
         return;
     }
-    await SequelizeModels_1.UserModel.update(updateData, {
+    await SequelizeModels.UserModel.update(updateData, {
         where: {
             id: userId,
             is_deleted: false,
@@ -301,7 +298,7 @@ const updateAdminUserBasic = async (userId, payload) => {
 };
 exports.updateAdminUserBasic = updateAdminUserBasic;
 const updateAdminUserStatus = async (userId, isActive) => {
-    await SequelizeModels_1.UserModel.update({ is_active: isActive }, {
+    await SequelizeModels.UserModel.update({ is_active: isActive }, {
         where: {
             id: userId,
             is_deleted: false,
@@ -310,24 +307,24 @@ const updateAdminUserStatus = async (userId, isActive) => {
 };
 exports.updateAdminUserStatus = updateAdminUserStatus;
 const replaceAdminUserRoles = async (userId, roles) => {
-    await sequelize_2.sequelize.transaction(async (transaction) => {
-        await SequelizeModels_1.UserRoleModel.destroy({
+    await sequelizeConfig.sequelize.transaction(async (transaction) => {
+        await SequelizeModels.UserRoleModel.destroy({
             where: { user_id: userId },
             transaction,
         });
-        const roleRows = await SequelizeModels_1.RoleModel.findAll({
-            where: { name: { [sequelize_1.Op.in]: roles } },
+        const roleRows = await SequelizeModels.RoleModel.findAll({
+            where: { name: { [sequelize.Op.in]: roles } },
             attributes: ["id"],
             transaction,
         });
         if (roleRows.length > 0) {
-            await SequelizeModels_1.UserRoleModel.bulkCreate(roleRows.map((role) => ({ user_id: userId, role_id: role.id })), { transaction, ignoreDuplicates: true });
+            await SequelizeModels.UserRoleModel.bulkCreate(roleRows.map((role) => ({ user_id: userId, role_id: role.id })), { transaction, ignoreDuplicates: true });
         }
     });
 };
 exports.replaceAdminUserRoles = replaceAdminUserRoles;
 const deleteAdminUser = async (userId) => {
-    await SequelizeModels_1.UserModel.update({
+    await SequelizeModels.UserModel.update({
         is_deleted: true,
         is_active: false,
     }, { where: { id: userId } });
@@ -336,13 +333,13 @@ exports.deleteAdminUser = deleteAdminUser;
 const getRevenueReport = async (input) => {
     const fromDate = input.fromDate ? new Date(`${input.fromDate}T00:00:00.000Z`) : undefined;
     const toDate = input.toDate ? new Date(`${input.toDate}T23:59:59.999Z`) : undefined;
-    const paidRows = await SequelizeModels_1.PaymentTransactionModel.findAll({
+    const paidRows = await SequelizeModels.PaymentTransactionModel.findAll({
         where: {
             status: "PAID",
             paid_at: {
-                [sequelize_1.Op.ne]: null,
-                ...(fromDate ? { [sequelize_1.Op.gte]: fromDate } : {}),
-                ...(toDate ? { [sequelize_1.Op.lte]: toDate } : {}),
+                [sequelize.Op.ne]: null,
+                ...(fromDate ? { [sequelize.Op.gte]: fromDate } : {}),
+                ...(toDate ? { [sequelize.Op.lte]: toDate } : {}),
             },
         },
         attributes: ["amount", "paid_at"],
@@ -395,30 +392,30 @@ const getDashboardTrends = async (input) => {
             periodEnd = new Date(Date.UTC(y, m, 0, 23, 59, 59, 999));
         }
         const [newPatients, appointments, revenueRows] = await Promise.all([
-            SequelizeModels_1.PatientModel.count({
+            SequelizeModels.PatientModel.count({
                 where: {
-                    created_at: { [sequelize_1.Op.gte]: periodStart, [sequelize_1.Op.lte]: periodEnd },
+                    created_at: { [sequelize.Op.gte]: periodStart, [sequelize.Op.lte]: periodEnd },
                 },
             }),
-            SequelizeModels_1.AppointmentModel.count({
+            SequelizeModels.AppointmentModel.count({
                 include: [
                     {
-                        model: SequelizeModels_1.DoctorSlotModel,
+                        model: SequelizeModels.DoctorSlotModel,
                         as: "slot",
                         required: true,
                         where: {
                             slot_date: {
-                                [sequelize_1.Op.gte]: periodStart.toISOString().slice(0, 10),
-                                [sequelize_1.Op.lte]: periodEnd.toISOString().slice(0, 10),
+                                [sequelize.Op.gte]: periodStart.toISOString().slice(0, 10),
+                                [sequelize.Op.lte]: periodEnd.toISOString().slice(0, 10),
                             },
                         },
                     },
                 ],
             }),
-            SequelizeModels_1.PaymentTransactionModel.findAll({
+            SequelizeModels.PaymentTransactionModel.findAll({
                 where: {
                     status: "PAID",
-                    paid_at: { [sequelize_1.Op.gte]: periodStart, [sequelize_1.Op.lte]: periodEnd },
+                    paid_at: { [sequelize.Op.gte]: periodStart, [sequelize.Op.lte]: periodEnd },
                 },
                 attributes: ["amount"],
             }),
@@ -435,7 +432,7 @@ const getDashboardTrends = async (input) => {
 };
 exports.getDashboardTrends = getDashboardTrends;
 const listSystemSettings = async () => {
-    const rows = await SequelizeModels_1.SystemSettingModel.findAll({
+    const rows = await SequelizeModels.SystemSettingModel.findAll({
         order: [["key", "ASC"]],
     });
     return rows.map((row) => {
@@ -450,14 +447,14 @@ const listSystemSettings = async () => {
 };
 exports.listSystemSettings = listSystemSettings;
 const upsertSystemSetting = async (payload) => {
-    const existing = await SequelizeModels_1.SystemSettingModel.findByPk(payload.key);
+    const existing = await SequelizeModels.SystemSettingModel.findByPk(payload.key);
     const saved = existing
         ? await existing.update({
             value: payload.value,
             description: payload.description ?? null,
             updated_at: new Date(),
         })
-        : await SequelizeModels_1.SystemSettingModel.create({
+        : await SequelizeModels.SystemSettingModel.create({
             key: payload.key,
             value: payload.value,
             description: payload.description ?? null,
@@ -473,7 +470,7 @@ const upsertSystemSetting = async (payload) => {
 };
 exports.upsertSystemSetting = upsertSystemSetting;
 const listMedicines = async () => {
-    const rows = await SequelizeModels_1.MedicineModel.findAll({
+    const rows = await SequelizeModels.MedicineModel.findAll({
         where: { is_deleted: false },
         order: [["created_at", "DESC"]],
     });
@@ -493,7 +490,7 @@ const listMedicines = async () => {
 };
 exports.listMedicines = listMedicines;
 const createMedicine = async (payload) => {
-    const created = await SequelizeModels_1.MedicineModel.create({
+    const created = await SequelizeModels.MedicineModel.create({
         code: payload.code,
         name: payload.name,
         unit: payload.unit ?? null,
@@ -515,7 +512,7 @@ const createMedicine = async (payload) => {
 };
 exports.createMedicine = createMedicine;
 const updateMedicine = async (medicineId, payload) => {
-    const existing = await SequelizeModels_1.MedicineModel.findOne({
+    const existing = await SequelizeModels.MedicineModel.findOne({
         where: { id: medicineId, is_deleted: false },
     });
     if (!existing)
@@ -541,12 +538,12 @@ const updateMedicine = async (medicineId, payload) => {
 };
 exports.updateMedicine = updateMedicine;
 const deleteMedicine = async (medicineId) => {
-    const [affected] = await SequelizeModels_1.MedicineModel.update({ is_deleted: true, is_active: false }, { where: { id: medicineId, is_deleted: false } });
+    const [affected] = await SequelizeModels.MedicineModel.update({ is_deleted: true, is_active: false }, { where: { id: medicineId, is_deleted: false } });
     return affected > 0;
 };
 exports.deleteMedicine = deleteMedicine;
 const listLabTestCatalog = async () => {
-    const rows = await SequelizeModels_1.LabTestCatalogModel.findAll({
+    const rows = await SequelizeModels.LabTestCatalogModel.findAll({
         where: { is_deleted: false },
         order: [["created_at", "DESC"]],
     });
@@ -565,7 +562,7 @@ const listLabTestCatalog = async () => {
 };
 exports.listLabTestCatalog = listLabTestCatalog;
 const createLabTestCatalog = async (payload) => {
-    const created = await SequelizeModels_1.LabTestCatalogModel.create({
+    const created = await SequelizeModels.LabTestCatalogModel.create({
         code: payload.code,
         name: payload.name,
         description: payload.description ?? null,
@@ -585,7 +582,7 @@ const createLabTestCatalog = async (payload) => {
 };
 exports.createLabTestCatalog = createLabTestCatalog;
 const updateLabTestCatalog = async (testId, payload) => {
-    const existing = await SequelizeModels_1.LabTestCatalogModel.findOne({
+    const existing = await SequelizeModels.LabTestCatalogModel.findOne({
         where: { id: testId, is_deleted: false },
     });
     if (!existing)
@@ -609,7 +606,7 @@ const updateLabTestCatalog = async (testId, payload) => {
 };
 exports.updateLabTestCatalog = updateLabTestCatalog;
 const deleteLabTestCatalog = async (testId) => {
-    const [affected] = await SequelizeModels_1.LabTestCatalogModel.update({ is_deleted: true, is_active: false }, { where: { id: testId, is_deleted: false } });
+    const [affected] = await SequelizeModels.LabTestCatalogModel.update({ is_deleted: true, is_active: false }, { where: { id: testId, is_deleted: false } });
     return affected > 0;
 };
 exports.deleteLabTestCatalog = deleteLabTestCatalog;
@@ -637,27 +634,27 @@ exports.getAdminUsers = getAdminUsers;
 const createUserByAdmin = async (payload) => {
     const emailUsed = await exports.findUserByEmail(payload.email);
     if (emailUsed) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Email đã tồn tại trong hệ thống");
+        throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Email đã tồn tại trong hệ thống");
     }
     if (payload.roles.includes("PATIENT") && !payload.patientProfile) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Thiếu thông tin hồ sơ bệnh nhân");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Thiếu thông tin hồ sơ bệnh nhân");
     }
     if (payload.roles.includes("DOCTOR") && !payload.doctorProfile) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Thiếu thông tin hồ sơ bác sĩ");
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Thiếu thông tin hồ sơ bác sĩ");
     }
     if (payload.patientProfile?.phoneNumber) {
         const phoneUsed = await exports.isPhoneUsed(payload.patientProfile.phoneNumber);
         if (phoneUsed) {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Số điện thoại đã được sử dụng");
+            throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Số điện thoại đã được sử dụng");
         }
     }
     if (payload.doctorProfile?.doctorCode) {
         const doctorCodeUsed = await exports.isDoctorCodeUsed(payload.doctorProfile.doctorCode);
         if (doctorCodeUsed) {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Mã bác sĩ đã tồn tại");
+            throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Mã bác sĩ đã tồn tại");
         }
     }
-    const passwordHash = await password_1.hashPassword(payload.password);
+    const passwordHash = await password.hashPassword(payload.password);
     try {
         return await exports.createAdminUser({
             fullName: payload.fullName,
@@ -680,7 +677,7 @@ const createUserByAdmin = async (payload) => {
     catch (error) {
         const pgCode = error?.code;
         if (pgCode === "23505") {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Dữ liệu người dùng đã tồn tại");
+            throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Dữ liệu người dùng đã tồn tại");
         }
         throw error;
     }
@@ -689,12 +686,12 @@ exports.createUserByAdmin = createUserByAdmin;
 const updateUserByAdmin = async (userId, payload) => {
     const user = await exports.findUserById(userId);
     if (!user) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
     }
     if (payload.email) {
         const existing = await exports.findUserByEmail(payload.email);
         if (existing && existing.id !== userId) {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Email đã tồn tại trong hệ thống");
+            throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Email đã tồn tại trong hệ thống");
         }
     }
     await exports.updateAdminUserBasic(userId, payload);
@@ -703,7 +700,7 @@ exports.updateUserByAdmin = updateUserByAdmin;
 const updateUserStatusByAdmin = async (userId, isActive) => {
     const user = await exports.findUserById(userId);
     if (!user) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
     }
     await exports.updateAdminUserStatus(userId, isActive);
 };
@@ -711,7 +708,7 @@ exports.updateUserStatusByAdmin = updateUserStatusByAdmin;
 const updateUserRolesByAdmin = async (userId, roles) => {
     const user = await exports.findUserById(userId);
     if (!user) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
     }
     await exports.replaceAdminUserRoles(userId, roles);
 };
@@ -719,7 +716,7 @@ exports.updateUserRolesByAdmin = updateUserRolesByAdmin;
 const deleteUserByAdmin = async (userId) => {
     const user = await exports.findUserById(userId);
     if (!user) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy người dùng");
     }
     await exports.deleteAdminUser(userId);
 };
@@ -732,7 +729,7 @@ const toRevenueCsv = (rows) => {
     return [headers.join(","), ...body].join("\n");
 };
 const toRevenuePdf = async (rows) => new Promise((resolve, reject) => {
-    const doc = new pdfkit_1.default({ margin: 36, size: "A4" });
+    const doc = new PDFDocument({ margin: 36, size: "A4" });
     const chunks = [];
     doc.on("data", (chunk) => chunks.push(chunk));
     doc.on("end", () => resolve(Buffer.concat(chunks)));
@@ -816,67 +813,67 @@ const getAdvancedDashboardOverview = async (period) => {
     const previousStartDate = toDateOnly(range.previousStart);
     const previousEndDate = toDateOnly(range.previousEnd);
     const [currentPatients, previousPatients, currentAppointments, previousAppointments, currentRevenue, previousRevenue,] = await Promise.all([
-        SequelizeModels_1.PatientModel.count({
+        SequelizeModels.PatientModel.count({
             where: {
                 created_at: {
-                    [sequelize_1.Op.gte]: range.currentStart,
-                    [sequelize_1.Op.lt]: range.currentEnd,
+                    [sequelize.Op.gte]: range.currentStart,
+                    [sequelize.Op.lt]: range.currentEnd,
                 },
             },
         }),
-        SequelizeModels_1.PatientModel.count({
+        SequelizeModels.PatientModel.count({
             where: {
                 created_at: {
-                    [sequelize_1.Op.gte]: range.previousStart,
-                    [sequelize_1.Op.lt]: range.previousEnd,
+                    [sequelize.Op.gte]: range.previousStart,
+                    [sequelize.Op.lt]: range.previousEnd,
                 },
             },
         }),
-        SequelizeModels_1.AppointmentModel.count({
+        SequelizeModels.AppointmentModel.count({
             include: [
                 {
-                    model: SequelizeModels_1.DoctorSlotModel,
+                    model: SequelizeModels.DoctorSlotModel,
                     as: "slot",
                     required: true,
                     where: {
                         slot_date: {
-                            [sequelize_1.Op.gte]: currentStartDate,
-                            [sequelize_1.Op.lt]: currentEndDate,
+                            [sequelize.Op.gte]: currentStartDate,
+                            [sequelize.Op.lt]: currentEndDate,
                         },
                     },
                 },
             ],
         }),
-        SequelizeModels_1.AppointmentModel.count({
+        SequelizeModels.AppointmentModel.count({
             include: [
                 {
-                    model: SequelizeModels_1.DoctorSlotModel,
+                    model: SequelizeModels.DoctorSlotModel,
                     as: "slot",
                     required: true,
                     where: {
                         slot_date: {
-                            [sequelize_1.Op.gte]: previousStartDate,
-                            [sequelize_1.Op.lt]: previousEndDate,
+                            [sequelize.Op.gte]: previousStartDate,
+                            [sequelize.Op.lt]: previousEndDate,
                         },
                     },
                 },
             ],
         }),
-        SequelizeModels_1.PaymentTransactionModel.sum("amount", {
+        SequelizeModels.PaymentTransactionModel.sum("amount", {
             where: {
                 status: "PAID",
                 paid_at: {
-                    [sequelize_1.Op.gte]: range.currentStart,
-                    [sequelize_1.Op.lt]: range.currentEnd,
+                    [sequelize.Op.gte]: range.currentStart,
+                    [sequelize.Op.lt]: range.currentEnd,
                 },
             },
         }),
-        SequelizeModels_1.PaymentTransactionModel.sum("amount", {
+        SequelizeModels.PaymentTransactionModel.sum("amount", {
             where: {
                 status: "PAID",
                 paid_at: {
-                    [sequelize_1.Op.gte]: range.previousStart,
-                    [sequelize_1.Op.lt]: range.previousEnd,
+                    [sequelize.Op.gte]: range.previousStart,
+                    [sequelize.Op.lt]: range.previousEnd,
                 },
             },
         }),
@@ -904,7 +901,7 @@ const getAdvancedDashboardOverview = async (period) => {
 exports.getAdvancedDashboardOverview = getAdvancedDashboardOverview;
 const getTopDepartmentsByPatients = async (period, limit = 5) => {
     const range = getRangeByPeriod(period);
-    const rows = await db_1.query(`
+    const rows = await db.query(`
       SELECT
         dep.id,
         dep.name,
@@ -924,7 +921,7 @@ const getTopDepartmentsByPatients = async (period, limit = 5) => {
 exports.getTopDepartmentsByPatients = getTopDepartmentsByPatients;
 const getRevenueByService = async (period) => {
     const range = getRangeByPeriod(period);
-    const rows = await db_1.query(`
+    const rows = await db.query(`
       SELECT
         COALESCE(service_snapshot, 'Khac') AS service_name,
         COALESCE(SUM(amount), 0)::text AS total_revenue,
@@ -961,7 +958,7 @@ const toAdvancedReportCsv = (overview, topDepartments, serviceRevenue) => {
     return lines.join("\n");
 };
 const toAdvancedReportPdf = async (overview, topDepartments, serviceRevenue) => new Promise((resolve, reject) => {
-    const doc = new pdfkit_1.default({ margin: 36, size: "A4" });
+    const doc = new PDFDocument({ margin: 36, size: "A4" });
     const chunks = [];
     doc.on("data", (chunk) => chunks.push(chunk));
     doc.on("end", () => resolve(Buffer.concat(chunks)));
@@ -1030,7 +1027,7 @@ const getPaymentReconciliation = async (input) => {
         conditions.push(`created_at <= $${params.length}`);
     }
     const whereSql = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-    const listResult = await db_1.query(`
+    const listResult = await db.query(`
       SELECT
         id,
         invoice_code,
@@ -1050,12 +1047,12 @@ const getPaymentReconciliation = async (input) => {
       LIMIT $${params.length + 1}
       OFFSET $${params.length + 2}
     `, [...params, input.pageSize, input.offset]);
-    const countResult = await db_1.query(`
+    const countResult = await db.query(`
       SELECT COUNT(*)::int AS total
       FROM payment_transactions
       ${whereSql}
     `, params);
-    const summaryResult = await db_1.query(`
+    const summaryResult = await db.query(`
       SELECT
         COUNT(*)::int AS total_transactions,
         COUNT(*) FILTER (WHERE status = 'PENDING')::int AS pending_transactions,
@@ -1079,7 +1076,7 @@ const getPaymentReconciliation = async (input) => {
 };
 exports.getPaymentReconciliation = getPaymentReconciliation;
 const reconcilePaymentTransaction = async (paymentId) => {
-    const updated = await db_1.query(`
+    const updated = await db.query(`
       UPDATE payment_transactions
       SET reconciled_at = NOW(),
           updated_at = NOW()
@@ -1095,16 +1092,16 @@ const reconcilePaymentTransaction = async (paymentId) => {
     if (updated.rows[0]) {
         return updated.rows[0];
     }
-    const existing = await db_1.query(`
+    const existing = await db.query(`
       SELECT id, status
       FROM payment_transactions
       WHERE id = $1
       LIMIT 1
     `, [paymentId]);
     if (!existing.rows[0]) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay giao dich thanh toan");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay giao dich thanh toan");
     }
-    throw new app_error_1.AppError(http_status_codes_1.StatusCodes.BAD_REQUEST, "Chi giao dich da thanh toan moi duoc doi soat");
+    throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Chi giao dich da thanh toan moi duoc doi soat");
 };
 exports.reconcilePaymentTransaction = reconcilePaymentTransaction;
 const getAdvancedDashboardOverviewByAdmin = async (period) => getAdvancedDashboardOverview(period);
@@ -1130,7 +1127,7 @@ const createMedicineByAdmin = async (payload) => {
     catch (error) {
         const pgCode = error?.code;
         if (pgCode === "23505") {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Mã thuốc đã tồn tại");
+            throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Mã thuốc đã tồn tại");
         }
         throw error;
     }
@@ -1139,7 +1136,7 @@ exports.createMedicineByAdmin = createMedicineByAdmin;
 const updateMedicineByAdmin = async (medicineId, payload) => {
     const updated = await exports.updateMedicine(medicineId, payload);
     if (!updated) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy thuốc");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy thuốc");
     }
     return updated;
 };
@@ -1147,7 +1144,7 @@ exports.updateMedicineByAdmin = updateMedicineByAdmin;
 const deleteMedicineByAdmin = async (medicineId) => {
     const deleted = await exports.deleteMedicine(medicineId);
     if (!deleted) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy thuốc");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy thuốc");
     }
 };
 exports.deleteMedicineByAdmin = deleteMedicineByAdmin;
@@ -1160,7 +1157,7 @@ const createLabTestCatalogByAdmin = async (payload) => {
     catch (error) {
         const pgCode = error?.code;
         if (pgCode === "23505") {
-            throw new app_error_1.AppError(http_status_codes_1.StatusCodes.CONFLICT, "Mã xét nghiệm đã tồn tại");
+            throw new app_error.AppError(http_status_codes.StatusCodes.CONFLICT, "Mã xét nghiệm đã tồn tại");
         }
         throw error;
     }
@@ -1169,7 +1166,7 @@ exports.createLabTestCatalogByAdmin = createLabTestCatalogByAdmin;
 const updateLabTestCatalogByAdmin = async (testId, payload) => {
     const updated = await exports.updateLabTestCatalog(testId, payload);
     if (!updated) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy xét nghiệm");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy xét nghiệm");
     }
     return updated;
 };
@@ -1177,11 +1174,83 @@ exports.updateLabTestCatalogByAdmin = updateLabTestCatalogByAdmin;
 const deleteLabTestCatalogByAdmin = async (testId) => {
     const deleted = await exports.deleteLabTestCatalog(testId);
     if (!deleted) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Không tìm thấy xét nghiệm");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Không tìm thấy xét nghiệm");
     }
 };
 exports.deleteLabTestCatalogByAdmin = deleteLabTestCatalogByAdmin;
-const getNotificationJobsByAdmin = async (input) => notification_queue_service_1.listNotificationJobs(input.pageSize, input.offset, input.status);
+const listActiveDoctorsForAnnouncement = async () => {
+    const result = await db.query(`
+      SELECT
+        d.id,
+        d.user_id,
+        d.full_name,
+        d.doctor_code
+      FROM doctors d
+      INNER JOIN users u ON u.id = d.user_id
+      WHERE d.is_deleted = FALSE
+        AND d.is_active = TRUE
+        AND d.user_id IS NOT NULL
+        AND u.is_deleted = FALSE
+        AND u.is_active = TRUE
+      ORDER BY d.full_name ASC
+    `);
+    return result.rows;
+};
+exports.listActiveDoctorsForAnnouncement = listActiveDoctorsForAnnouncement;
+const createDoctorAnnouncementByAdmin = async (payload) => {
+    const title = payload.title.trim();
+    const message = payload.message.trim();
+    if (payload.sendToAllDoctors) {
+        const doctors = await exports.listActiveDoctorsForAnnouncement();
+        if (doctors.length === 0) {
+            throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong co bac si hop le de gui thong bao");
+        }
+        const targetUserIds = doctors.map((doctor) => doctor.user_id);
+        await db.query(`
+          INSERT INTO notifications (user_id, title, message, type)
+          SELECT UNNEST($1::uuid[]), $2, $3, 'DOCTOR_ANNOUNCEMENT'
+        `, [targetUserIds, title, message]);
+        return {
+            send_to_all_doctors: true,
+            total_recipients: doctors.length,
+            doctor_ids: doctors.map((doctor) => doctor.id),
+            notification_type: "DOCTOR_ANNOUNCEMENT",
+        };
+    }
+    if (!payload.doctorId) {
+        throw new app_error.AppError(http_status_codes.StatusCodes.BAD_REQUEST, "Thieu doctorId de gui thong bao");
+    }
+    const targetDoctor = await db.query(`
+      SELECT
+        d.id,
+        d.user_id
+      FROM doctors d
+      INNER JOIN users u ON u.id = d.user_id
+      WHERE d.id = $1
+        AND d.is_deleted = FALSE
+        AND d.is_active = TRUE
+        AND d.user_id IS NOT NULL
+        AND u.is_deleted = FALSE
+        AND u.is_active = TRUE
+      LIMIT 1
+    `, [payload.doctorId]);
+    const doctor = targetDoctor.rows[0];
+    if (!doctor) {
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay bac si hoat dong de gui thong bao");
+    }
+    await db.query(`
+      INSERT INTO notifications (user_id, title, message, type)
+      VALUES ($1, $2, $3, 'DOCTOR_ANNOUNCEMENT')
+    `, [doctor.user_id, title, message]);
+    return {
+        send_to_all_doctors: false,
+        total_recipients: 1,
+        doctor_ids: [doctor.id],
+        notification_type: "DOCTOR_ANNOUNCEMENT",
+    };
+};
+exports.createDoctorAnnouncementByAdmin = createDoctorAnnouncementByAdmin;
+const getNotificationJobsByAdmin = async (input) => notification_queue_service.listNotificationJobs(input.pageSize, input.offset, input.status);
 exports.getNotificationJobsByAdmin = getNotificationJobsByAdmin;
-const processNotificationJobsByAdmin = async (batchSize) => notification_queue_service_1.processNotificationQueueBatch(batchSize);
+const processNotificationJobsByAdmin = async (batchSize) => notification_queue_service.processNotificationQueueBatch(batchSize);
 exports.processNotificationJobsByAdmin = processNotificationJobsByAdmin;

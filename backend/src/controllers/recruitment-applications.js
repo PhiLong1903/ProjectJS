@@ -64,9 +64,7 @@ const downloadRecruitmentApplicationCvController = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  createRecruitmentApplicationController,
-  listRecruitmentApplicationsAdminController,
-  downloadRecruitmentApplicationCvController,
-  updateRecruitmentApplicationStatusController,
-};
+exports.createRecruitmentApplicationController = createRecruitmentApplicationController;
+exports.listRecruitmentApplicationsAdminController = listRecruitmentApplicationsAdminController;
+exports.downloadRecruitmentApplicationCvController = downloadRecruitmentApplicationCvController;
+exports.updateRecruitmentApplicationStatusController = updateRecruitmentApplicationStatusController;

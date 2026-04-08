@@ -31,6 +31,4 @@ const sendRecruitmentFeedbackEmail = async (input) => {
   };
 };
 
-module.exports = {
-  sendRecruitmentFeedbackEmail,
-};
+exports.sendRecruitmentFeedbackEmail = sendRecruitmentFeedbackEmail;

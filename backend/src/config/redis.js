@@ -1,16 +1,16 @@
-const redis_1 = require("redis");
-const env_1 = require("./env");
+const redis = require("redis");
+const env = require("./env");
 let redisClient = null;
 let redisInitStarted = false;
 const getRedisClient = () => {
-    if (!env_1.env.REDIS_RATE_LIMIT_ENABLED || !env_1.env.REDIS_URL) {
+    if (!env.env.REDIS_RATE_LIMIT_ENABLED || !env.env.REDIS_URL) {
         return null;
     }
     if (redisClient) {
         return redisClient;
     }
-    redisClient = redis_1.createClient({
-        url: env_1.env.REDIS_URL,
+    redisClient = redis.createClient({
+        url: env.env.REDIS_URL,
     });
     redisClient.on("error", (error) => {
         console.error("Redis error:", error);

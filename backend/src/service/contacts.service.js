@@ -1,8 +1,8 @@
-const http_status_codes_1 = require("http-status-codes");
-const SequelizeModels_1 = require("../schemas/SequelizeModels");
-const app_error_1 = require("../utils/app-error");
+const http_status_codes = require("http-status-codes");
+const SequelizeModels = require("../schemas/SequelizeModels");
+const app_error = require("../utils/app-error");
 const createContactMessage = async (input) => {
-    const row = await SequelizeModels_1.ContactMessageModel.create({
+    const row = await SequelizeModels.ContactMessageModel.create({
         full_name: input.fullName,
         phone_number: input.phoneNumber ?? null,
         email: input.email ?? null,
@@ -21,7 +21,7 @@ const createContactMessage = async (input) => {
 };
 exports.createContactMessage = createContactMessage;
 const listContactMessages = async (limit, offset) => {
-    const { rows, count } = await SequelizeModels_1.ContactMessageModel.findAndCountAll({
+    const { rows, count } = await SequelizeModels.ContactMessageModel.findAndCountAll({
         order: [["created_at", "DESC"]],
         limit,
         offset,
@@ -45,9 +45,9 @@ exports.createContactMessageService = createContactMessageService;
 const getContactMessagesAdmin = (pageSize, offset) => exports.listContactMessages(pageSize, offset);
 exports.getContactMessagesAdmin = getContactMessagesAdmin;
 const getContactMessageDetailAdmin = async (messageId) => {
-    const row = await SequelizeModels_1.ContactMessageModel.findByPk(messageId);
+    const row = await SequelizeModels.ContactMessageModel.findByPk(messageId);
     if (!row) {
-        throw new app_error_1.AppError(http_status_codes_1.StatusCodes.NOT_FOUND, "Khong tim thay tin nhan lien he");
+        throw new app_error.AppError(http_status_codes.StatusCodes.NOT_FOUND, "Khong tim thay tin nhan lien he");
     }
     return {
         id: row.id,
